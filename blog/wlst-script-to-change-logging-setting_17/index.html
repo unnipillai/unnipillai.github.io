@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>WLST script to change logging setting for all server in the domain — unni@dropzone</title><meta name="description" content="A continuation of previous post … with a logic which would make changes to all the servers in the domain"><link rel="canonical" href="https://unnipillai.com/blog/wlst-script-to-change-logging-setting_17/"><meta property="og:title" content="WLST script to change logging setting for all server in the domain — unni@dropzone"><meta property="og:description" content="A continuation of previous post … with a logic which would make changes to all the servers in the domain"><meta property="og:url" content="https://unnipillai.com/blog/wlst-script-to-change-logging-setting_17/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>WLST script to change logging setting for all server in the domain</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2009-04-17T00:00:00.000Z">April 17, 2009</time> </div> </div> </header> <div class="prose">  <p>A continuation of previous post … with a logic which would make changes to all the servers in the domain</p>
+<h1 id="written-by-unni-on-fri-17-apr-0630ist-download"><strong>Written by Unni on Fri 17 Apr 06:30(IST) <a href="http://pastebin.com/pastebin.php?dl=m6b1f16f8" title="download file">download</a></strong></h1>
+<ol>
+<li>
+<p>connect(‘weblogic’,‘weblogic’,‘t3://localhost:7001’)</p>
+</li>
+<li>
+<p>edit()</p>
+</li>
+<li>
+<p>startEdit()</p>
+</li>
+<li>
+<p>svrs = adminHome.getMBeansByType(‘Server’)</p>
+</li>
+<li>
+<p><strong>for</strong> s <strong>in</strong> svrs:</p>
+</li>
+<li>
+<p>   name = s.getName()</p>
+</li>
+<li>
+<p>   cd(‘/Servers/’ + name + ‘/Log/’ + name)</p>
+</li>
+<li>
+<p>   cmo.setNumberOfFilesLimited(true)</p>
+</li>
+<li>
+<p>   cmo.setFileCount(100)</p>
+</li>
+<li>
+<p>   cmo.setDomainLogBroadcastSeverity(‘Warning’)</p>
+</li>
+<li>
+<p>   cmo.setMemoryBufferSeverity(‘Warning’)</p>
+</li>
+<li>
+<p>   cmo.setLogFileSeverity(‘Warning’)</p>
+</li>
+<li>
+<p>   cmo.setStdoutSeverity(‘Warning’)</p>
+</li>
+<li>
+<p>activate()</p>
+</li>
+<li>
+<p>disconnect()</p>
+</li>
+</ol>
+<p>Time to sleep… Gud Nite :)</p>
+<p>Unni</p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

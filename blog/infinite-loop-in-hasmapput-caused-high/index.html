@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Infinite loop in hasmap.put caused high CPU usage stuck threads — unni@dropzone</title><meta name="description" content="Issue:"><link rel="canonical" href="https://unnipillai.com/blog/infinite-loop-in-hasmapput-caused-high/"><meta property="og:title" content="Infinite loop in hasmap.put caused high CPU usage stuck threads — unni@dropzone"><meta property="og:description" content="Issue:"><meta property="og:url" content="https://unnipillai.com/blog/infinite-loop-in-hasmapput-caused-high/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Infinite loop in hasmap.put caused high CPU usage stuck threads</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2009-12-07T00:00:00.000Z">December 7, 2009</time> </div> </div> </header> <div class="prose">  <p><strong>Issue:</strong></p>
+<p>Weblogic threads going into a hang/ locked / stuck state with the following stack trace in thread dumps:</p>
+<p>at java/util/HashMap.put(HashMap.java:1657)[optimized]</p>
+<p>at java/util/HashSet.add(HashSet.java:194)[inlined]</p>
+<p>at weblogic/rmi/internal/dgc/DGCServerImpl.addPhantomRef(DGCServerImpl.java:136)[inlined]</p>
+<p>at weblogic/rmi/internal/BasicServerRef.getLocalRef(BasicServerRef.java:729)[inlined]</p>
+<p>at weblogic/rmi/internal/BasicServerRef.getStubReference(BasicServerRef.java:709)[optimized]</p>
+<p>at weblogic/rmi/cluster/ClusterableServerRef.getStubReference(ClusterableServerRef.java:193)[optimized]</p>
+<p>at weblogic/rmi/internal/OIDManager.getReplacement(OIDManager.java:172)[optimized]</p>
+<p>at weblogic/rmi/utils/io/RemoteObjectReplacer.replaceRemote(RemoteObjectReplacer.java:123)[inlined]</p>
+<p>at weblogic/rmi/utils/io/RemoteObjectReplacer.replaceObject(RemoteObjectReplacer.java:104)[optimized]</p>
+<p>at weblogic/rmi/utils/io/InteropObjectReplacer.replaceObject(InteropObjectReplacer.java:62)</p>
+<p>at weblogic/utils/io/ChunkedObjectOutputStream.replaceObject(ChunkedObjectOutputStream.java:42)</p>
+<p>at weblogic/utils/io/ChunkedObjectOutputStream$NestedObjectOutputStream.replaceObject(ChunkedObjectOutputStream.java:151)</p>
+<p>at java/io/ObjectOutputStream.writeObject0(ObjectOutputStream.java:1045)[inlined]</p>
+<p>at java/io/ObjectOutputStream.writeObject(ObjectOutputStream.java:302)[optimized]</p>
+<p>at weblogic/jms/client/JMSConnectionFactory.writeExternal(JMSConnectionFactory.java:359)</p>
+<p>at java/io/ObjectOutputStream.writeExternalData(ObjectOutputStream.java:1310)</p>
+<p>at java/io/ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1288)[inlined]</p>
+<p>at java/io/ObjectOutputStream.writeObject0(ObjectOutputStream.java:1079)[inlined]</p>
+<p>at java/io/ObjectOutputStream.writeObject(ObjectOutputStream.java:302)[optimized]</p>
+<p>at weblogic/rjvm/MsgAbbrevOutputStream.writeObject(MsgAbbrevOutputStream.java:614)</p>
+<p>at weblogic/utils/io/ChunkedObjectOutputStream.writeObject(ChunkedObjectOutputStream.java:73)</p>
+<p>at weblogic/jndi/internal/RootNamingNode_WLSkel.invoke(ILweblogic/rmi/spi/InboundRequest;Lweblogic/rmi/spi/OutboundResponse;Ljava/lang/Object;)Lweblogic/rmi/spi/OutboundResponse;(Unknown Source)</p>
+<p>at weblogic/rmi/internal/BasicServerRef.invoke(BasicServerRef.java:553)[optimized]</p>
+<p>at weblogic/rmi/cluster/ClusterableServerRef.invoke(ClusterableServerRef.java:224)</p>
+<p>at weblogic/rmi/internal/BasicServerRef$1.run(BasicServerRef.java:443)[inlined]</p>
+<p>at weblogic/security/acl/internal/AuthenticatedSubject.doAs(AuthenticatedSubject.java:363)[inlined]</p>
+<p>at weblogic/security/service/SecurityManager.runAs(SecurityManager.java:147)[inlined]</p>
+<p>at weblogic/rmi/internal/BasicServerRef.handleRequest(BasicServerRef.java:439)[inlined]</p>
+<p>at weblogic/rmi/internal/BasicServerRef.access$300(BasicServerRef.java:61)[inlined]</p>
+<p>at weblogic/rmi/internal/BasicServerRef$BasicExecuteRequest.run(BasicServerRef.java:983)[optimized]</p>
+<p>at weblogic/work/ExecuteRequestAdapter.execute(ExecuteRequestAdapter.java:21)[optimized]</p>
+<p>at weblogic/kernel/ExecuteThread.execute(ExecuteThread.java:145)[optimized]</p>
+<p><strong>Explanation:</strong></p>
+<p>- This issue is a resultant of a Hashmap.put() going into a recursive loop causing the weblogic thread going into a stuck state and eventually causing the CPU utilization for the process to increase resulting in an unresponsive</p>
+<p><strong>Solution:</strong></p>
+<p>- Oracle forums say that this to be BUG in the weblogic server, and has released a patch for the same</p>
+<p>- To get a fix for this issue: Open a support ticket with support along with the latest thread dumps so that they can diagnose the issue and provide relevant fixes</p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

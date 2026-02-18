@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Delete Admin Server for a running Weblogic domain — unni@dropzone</title><meta name="description" content="There would be scenarios in prod/dev environments which warrants us to create a new / stand by AdminServer, you may follow the below gives steps to achive the same."><link rel="canonical" href="https://unnipillai.com/blog/delete-admin-server-for-running/"><meta property="og:title" content="Delete Admin Server for a running Weblogic domain — unni@dropzone"><meta property="og:description" content="There would be scenarios in prod/dev environments which warrants us to create a new / stand by AdminServer, you may follow the below gives steps to achive the same."><meta property="og:url" content="https://unnipillai.com/blog/delete-admin-server-for-running/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Delete Admin Server for a running Weblogic domain</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2010-03-24T00:00:00.000Z">March 24, 2010</time> </div> </div> </header> <div class="prose">  <p>There would be scenarios in prod/dev environments which warrants us to create a new / stand by AdminServer, you may follow the below gives steps to achive the same.</p>
+<p>You cannot use the Administration Console to delete the Administration Server as the admin console runs on the Administration Server</p>
+<p><strong>Try these steps:</strong></p>
+<ol>
+<li>
+<p>Create a new server name: newAdminServer (say port number: 8001)</p>
+</li>
+<li>
+<p>Stop all running servers in the domain on which you are working on</p>
+</li>
+<li>
+<p>Start the new server as admin server: java -Dweblogic.Name= newAdminServer weblogic.Server</p>
+</li>
+<li>
+<p>Start the Administration Console for the newly-started server <a href="http://ip:8001/console">http://ip:8001/console</a></p>
+</li>
+<li>
+<p>Delete the default admin server form the console</p>
+</li>
+</ol>
+<p>Cheers :)<br>
+Unni</p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Add and Remove targets — unni@dropzone</title><meta name="description" content="Add and Remove targets from a Deploy-able system resource:"><link rel="canonical" href="https://unnipillai.com/blog/add-and-remove-targets-from-deploy-able/"><meta property="og:title" content="Add and Remove targets — unni@dropzone"><meta property="og:description" content="Add and Remove targets from a Deploy-able system resource:"><meta property="og:url" content="https://unnipillai.com/blog/add-and-remove-targets-from-deploy-able/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Add and Remove targets</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2010-06-01T00:00:00.000Z">June 1, 2010</time> </div> </div> </header> <div class="prose">  <p>Add and Remove targets from a Deploy-able system resource:</p>
+<p><em><strong>@Deepti : i wrote this post for you babie…</strong></em> </p>
+<p>• Any deploy-able weblogic system resource (JDBC Data Source, JMS Connection Factory, JMS Servers, JDBC Multi Pools, Web deployment, etc) implement the ‘DeploymentMBean’ interface.</p>
+<p>• A deploy-able Systme resource is any MBean that may be deployed on one or more targets, such as a JMS Front-end or back-end or a JDBC connection pool.</p>
+<p>• Any deploy-able resource (MBean) has targets, which specify which servers the deployment should be deployed / pinned on.</p>
+<p>• All these deploy-able resources (MBean) leverage ‘addTarget’ and ‘removeTarget’ methods , which they inherit from the ‘DeploymentMBean’ interface.</p>
+<p>o addTarget(target)</p>
+<p>- This method adds a target to specify additional servers / clusters on which the deployable Mbean can be deployed</p>
+<p>- here, target - is the reference variable of type: TargetMBean, [a server MBean is acceptable], see example below</p>
+<p>o removeTarget(target)</p>
+<p>- This method removes the value of the addTarget attribute</p>
+<p>- here, target - is the reference variable of type: TargetMBean, [a server MBean is acceptable], see example below</p>
+<p>o In this example we will use a JDBC Data Source to demonstrate this:</p>
+<p>o Prerequisites</p>
+<p>- WebLogic Domain with an admin server and a managed server named ‘MS1’</p>
+<p>- Create a JDBC Datasource named ‘DS1’, and deploy it ONLY on ‘Admin Server’</p>
+<p>- Make sure that both the servers are running and DS1 is also running</p>
+<p>o Demonstration for adding a target to a Data Source:</p>
+<p>- open a command window (CMD)</p>
+<p>- set the environment by running the ‘setdomainenv.cmd’ from the ‘domain\bin’ dir</p>
+<p>- execute ‘java weblogic.WLST’</p>
+<p>- connect to the Admin Server using ‘connect’ command</p>
+<p>Code written using online editor <a href="http://pastebin.com/">Pastebin.com</a> - <a href="http://pastebin.com/raw.php?i=XZhBsSh2">Download Raw</a></p>
+<ol>
+<li>
+<p><em>##      Written by Unni — don’t hesitate to add a comment to this post incase you have any queries or sugessions</em></p>
+</li>
+<li>
+<p><em>##      you can even write to me at <a href="mailto:unni@unnikrishnanpillai.tk">unni@unnikrishnanpillai.tk</a></em></p>
+</li>
+<li>
+<p><em>##      please leave a comment if u find this post helpfull</em></p>
+</li>
+<li>
+<p>edit()</p>
+</li>
+<li>
+<p>startEdit()</p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1’)</p>
+</li>
+<li>
+<p>jdbcDS1=cmo</p>
+</li>
+<li>
+<p>cd(“/Servers/MS1”)</p>
+</li>
+<li>
+<p>target=cmo  </p>
+</li>
+<li>
+<p>jdbcDS1.addTarget(target)</p>
+</li>
+<li>
+<p>save()</p>
+</li>
+<li>
+<p>activate()</p>
+</li>
+</ol>
+<p>o  You should be able to see the new target in the Admin Console (Service > JDBC > DataSources > DS1 > Targets Tab)</p>
+<p>o  Demonstration for removing a target to a Data Source:</p>
+<p>- open a command window (CMD)</p>
+<p>- set the environment by running the ‘setdomainenv.cmd’ from the ‘domain\bin’ dir</p>
+<p>- execute ‘java weblogic.WLST’</p>
+<p>- connect to the Admin Server using ‘connect’ command</p>
+<p>Code written using online editor <a href="http://pastebin.com/">Pastebin.com</a> - <a href="http://pastebin.com/raw.php?i=nFJnm6c2">Download Raw</a></p>
+<ol>
+<li>
+<p><em>##      Written by Unni — don’t hesitate to add a comment to this post incase you have any queries or sugessions</em></p>
+</li>
+<li>
+<p><em>##      you can even write to me at <a href="mailto:unni@unnikrishnanpillai.tk">unni@unnikrishnanpillai.tk</a></em></p>
+</li>
+<li>
+<p><em>##      please leave a comment if u find this post helpfull</em></p>
+</li>
+<li>
+<p>edit()</p>
+</li>
+<li>
+<p>startEdit()</p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1’)</p>
+</li>
+<li>
+<p>jdbcDS1=cmo</p>
+</li>
+<li>
+<p>cd(“/Servers/MS1”)</p>
+</li>
+<li>
+<p>target=cmo  </p>
+</li>
+<li>
+<p>jdbcDS1.removeTarget(target)</p>
+</li>
+<li>
+<p>save()</p>
+</li>
+<li>
+<p>activate()</p>
+</li>
+</ol>
+<p>•  You should be able to see the new target in the Admin Console (Service > JDBC > DataSources > DS1 > Targets Tab)</p>
+<p>Holla :)</p>
+<p>Unni,</p>
+<p><a href="mailto:unni@unnikrishnanpillai.tk" title="unni@unnikrishnanpillai.tk">unni@unnikrishnanpillai.tk</a></p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>&lt; Reached maximum capacity of pool &quot;MyPoolDS&quot;, making &quot;0&quot; new resource instances instead of &quot;10&quot;.&gt; — unni@dropzone</title><meta name="description" content="What to do when you see a similar message in weblogic server logs:"><link rel="canonical" href="https://unnipillai.com/blog/what-to-do-when-you-see-similar-message/"><meta property="og:title" content="< Reached maximum capacity of pool &#34;MyPoolDS&#34;, making &#34;0&#34; new resource instances instead of &#34;10&#34;.> — unni@dropzone"><meta property="og:description" content="What to do when you see a similar message in weblogic server logs:"><meta property="og:url" content="https://unnipillai.com/blog/what-to-do-when-you-see-similar-message/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>&lt; Reached maximum capacity of pool &quot;MyPoolDS&quot;, making &quot;0&quot; new resource instances instead of &quot;10&quot;.&gt;</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2009-12-07T00:00:00.000Z">December 7, 2009</time> </div> </div> </header> <div class="prose">  <p>What to do when you see a similar message in weblogic server logs:</p>
+<p><strong><bea-000627> &#x3C; Reached maximum capacity of pool “MyPoolDS”, making “0” new resource instances instead of “10”.></bea-000627></strong></p>
+<p><strong>Suggestions:</strong></p>
+<p>1.       What is the right thing to after Reached maximum capacity of pool?</p>
+<blockquote>
+<p>·         You can get this message, in many scenarios</p>
+</blockquote>
+<blockquote>
+<p>                                                               i.      When the number of connections configured for the connection pool using MaxCapacity is not sufficient for the application use. In this case, it is suggested to increase the no: of connections.</p>
+</blockquote>
+<blockquote>
+<p>                                                             ii.      When there is no available thread to get the connection. As a thumb rule, it is always recommended to keep the execute thread size equal to the max number of connection.</p>
+</blockquote>
+<p>2.       You can tune the ‘InactiveConnectionTimeoutSeconds’ parameter:</p>
+<blockquote>
+<p>·          InactiveConnectionTimeoutSeconds refers to the number of inactive seconds on a reserved connection before Weblogic Server reclaims the connection and releases it back into the connection pool.</p>
+</blockquote>
+<blockquote>
+<p>·         You can use the Inactive Connection Timeout feature to reclaim leaked connections - connections that were not explicitly closed by the application. Note that this feature is not intended to be used in place of properly closing connections.</p>
+</blockquote>
+<blockquote>
+<p>·         When set to 0, the feature is disabled</p>
+</blockquote>
+<blockquote>
+<p>·         In addition to all the above information, it is always recommended to follow the following settings for your connection pool in your production environment to improve performance:</p>
+</blockquote>
+<blockquote>
+<p>                                                               i.      set <initialcapacity> = <maxcapacity></maxcapacity></initialcapacity></p>
+</blockquote>
+<blockquote>
+<p>                                                             ii.      This will ensure that all connections are opened during Weblogic Server start. As creation of a physical database connection is very expensive, all needed connections should be opened immediately and kept open</p>
+</blockquote>
+<blockquote>
+<p>                                                            iii.      disable shrinking by setting <shrinkingenabled> to false</shrinkingenabled></p>
+</blockquote>
+<blockquote>
+<p>                                                           iv.      As mentioned above, creation of physical database connections is expensive, connections should be established once and kept during the complete lifetime of the Weblogic Server instance</p>
+</blockquote>
+<blockquote>
+<p>                                                             v.      Set <testconnectionsonreserve> to true, this will ensure that connections are tested before they go to the application and are reopened if needed set <testconnectionsonrelease> to false.</testconnectionsonrelease></testconnectionsonreserve></p>
+</blockquote>
+<blockquote>
+<p>                                                           vi.      As connection testing is an overhead that should be avoided where possible, connection testing for connections that an application gives back to the pool is an unnecessary effort. As long as connections are tested during a getConnection, this is not needed.</p>
+</blockquote>
+<blockquote>
+<p>                                                          vii.      Using ‘TestConnectionsOnReserve’ and ‘TestConnectionsOnRelease’ may have an impact on performance.</p>
+</blockquote>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Using WLS 8.1 Threading Model in WLS 9.x / 10.x — unni@dropzone</title><meta name="description" content="If in the past (versions prior to WLS 9.x) you have been using execute queues to improve performance of your applications ,&#38;nbsp; you may still continue avail the flexibility of 8.1 style execute queu"><link rel="canonical" href="https://unnipillai.com/blog/using-wls-81-threading-model-in-wls-9x/"><meta property="og:title" content="Using WLS 8.1 Threading Model in WLS 9.x / 10.x — unni@dropzone"><meta property="og:description" content="If in the past (versions prior to WLS 9.x) you have been using execute queues to improve performance of your applications ,&#38;nbsp; you may still continue avail the flexibility of 8.1 style execute queu"><meta property="og:url" content="https://unnipillai.com/blog/using-wls-81-threading-model-in-wls-9x/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Using WLS 8.1 Threading Model in WLS 9.x / 10.x</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2010-03-26T00:00:00.000Z">March 26, 2010</time> </div> </div> </header> <div class="prose">  <p>If in the past (versions prior to WLS 9.x) you have been using execute queues to improve performance of your applications ,  you may still continue avail the flexibility of 8.1 style execute queues by following the below given steps:</p>
+<p>1. manually add the following in the config.xml:</p>
+<server>  
+<name>AdminServer</name>  
+**<use81-style-execute-queues>true</use81-style-execute-queues>**  
+<listen-address>  
+</listen-address></server>
+<p><strong><or></or></strong></p>
+<p>1. Add the following in JAVA_OPTIONS : <strong>-Dweblogic.Use81StyleExecuteQueues=true</strong></p>
+<p>2. Start the weblogic server</p>
+<ol>
+<li>
+<ul>
+<li>
+<p>On adding this parameter you will see a tab names ‘<strong>QUEUES</strong>’ under ‘<strong>Server > configuration</strong>’ in the administration console</p>
+</li>
+<li>
+<p>Create a new Queue named : weblogic.kernel.defaultNow you can edir the properties of the Queue in the similar manner you use to do it in WLS 8.1</p>
+</li>
+<li>
+<p>This may come handy: <a href="http://download.oracle.com/docs/cd/E11035_01/wls100/perform/appb_queues.html#wp1048423">http://download.oracle.com/docs/cd/E11035_01/wls100/perform/appb_queues.html#wp1048423</a></p>
+</li>
+</ul>
+</li>
+</ol>
+<p>Cheers :)<br>
+Unni</p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

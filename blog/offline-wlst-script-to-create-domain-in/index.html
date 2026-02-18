@@ -1,0 +1,231 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Offline WLST script to create domain in WLS 11gR1 — unni@dropzone</title><meta name="description" content="---"><link rel="canonical" href="https://unnipillai.com/blog/offline-wlst-script-to-create-domain-in/"><meta property="og:title" content="Offline WLST script to create domain in WLS 11gR1 — unni@dropzone"><meta property="og:description" content="---"><meta property="og:url" content="https://unnipillai.com/blog/offline-wlst-script-to-create-domain-in/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Offline WLST script to create domain in WLS 11gR1</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2009-10-04T00:00:00.000Z">October 4, 2009</time> </div> </div> </header> <div class="prose">  <p>---</p>
+<h1 id="posted-by-unni-on-sun-4-oct-1115-download"><strong>Posted by Unni on Sun 4 Oct 11:15 <a href="http://pastebin.com/pastebin.php?dl=f1707afdf" title="download file">download</a></strong></h1>
+<ol>
+<li>
+<p><em># This is an Offline  WLST script to create a WLS 10.3.1 (Oracle Weblogic Server 11gR1) Domain</em></p>
+</li>
+<li>
+<p><em>#</em></p>
+</li>
+<li>
+<p><em># Domain consists of:</em></p>
+</li>
+<li>
+<p><em># 1. Admin Server</em></p>
+</li>
+<li>
+<p><em># 2. Two Managed Servers</em></p>
+</li>
+<li>
+<p><em># 3. A Cluster with Two Managed Server</em></p>
+</li>
+<li>
+<p><em># 4. An application deployed to the cluster</em></p>
+</li>
+<li>
+<p><em># Read a domain template</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Reading Template - D:/Oracle/11gR1/one/wlserver_10.3/common/templates/domains/wls.jar’)</p>
+</li>
+<li>
+<p>readTemplate(‘D:/Oracle/11gR1/one/wlserver_10.3/common/templates/domains/wls.jar’)</p>
+</li>
+<li>
+<p><em># Admin Server</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Creating Server - Admin Server’)</p>
+</li>
+<li>
+<p>cd(‘Servers/AdminServer’)</p>
+</li>
+<li>
+<p>set(‘ListenAddress’,‘localhost’)</p>
+</li>
+<li>
+<p>set(‘ListenPort’, 7001)</p>
+</li>
+<li>
+<p>create(‘AdminServer’,‘SSL’)</p>
+</li>
+<li>
+<p>cd(‘SSL/AdminServer’)</p>
+</li>
+<li>
+<p>set(‘Enabled’, ‘True’)</p>
+</li>
+<li>
+<p>set(‘ListenPort’, 7002)</p>
+</li>
+<li>
+<p><em># Security</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Creating Password’)</p>
+</li>
+<li>
+<p>cd(’/’)</p>
+</li>
+<li>
+<p>cd(‘Security/base_domain/User/weblogic’)</p>
+</li>
+<li>
+<p>cmo.setPassword(‘welcome1’)</p>
+</li>
+<li>
+<p><em># Start Up</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Setting StartUp Options’)</p>
+</li>
+<li>
+<p>setOption(‘CreateStartMenu’, ‘false’)</p>
+</li>
+<li>
+<p>setOption(‘ServerStartMode’, ‘dev’)</p>
+</li>
+<li>
+<p>setOption(‘JavaHome’,‘D:/Oracle/11gR1/one/jrockit_160_05_R27.6.2-20’)</p>
+</li>
+<li>
+<p>setOption(‘OverwriteDomain’, ‘true’)</p>
+</li>
+<li>
+<p><em># Create Domain to File System</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Writing Domain To File System’)</p>
+</li>
+<li>
+<p>writeDomain(‘D:/Oracle/11gR1/one/user_projects/domains/OfflineDomain_WLST’)</p>
+</li>
+<li>
+<p>closeTemplate()</p>
+</li>
+<li>
+<p><em># Read the Created Domain</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Reading the Domain from In Offline Mode’)</p>
+</li>
+<li>
+<p>readDomain(‘D:/Oracle/11gR1/one/user_projects/domains/OfflineDomain_WLST’)</p>
+</li>
+<li>
+<p><em># Creating Managed Servers</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Creating Server - MS1 on Port # 8001’)</p>
+</li>
+<li>
+<p>cd(’/’)</p>
+</li>
+<li>
+<p>create(‘MS1’, ‘Server’)</p>
+</li>
+<li>
+<p>cd(‘Server/MS1’)</p>
+</li>
+<li>
+<p>set(‘ListenPort’, 8001)</p>
+</li>
+<li>
+<p>set(‘ListenAddress’, ‘localhost’)</p>
+</li>
+<li>
+<p><strong>print</strong>(‘Creating Server - MS2 on Port # 8011’)</p>
+</li>
+<li>
+<p>cd(’/’)</p>
+</li>
+<li>
+<p>create(‘MS2’, ‘Server’)</p>
+</li>
+<li>
+<p>cd(‘Server/MS2’)</p>
+</li>
+<li>
+<p>set(‘ListenPort’, 8011)</p>
+</li>
+<li>
+<p>set(‘ListenAddress’, ‘localhost’)</p>
+</li>
+<li>
+<p><em># Create and configure a cluster and assign the Managed Servers to that cluster.</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Creating Cluster - WLSTCluster and adding MS1, MS2’)</p>
+</li>
+<li>
+<p>cd(’/’)</p>
+</li>
+<li>
+<p>create(‘WLSTCluster’, ‘Cluster’)</p>
+</li>
+<li>
+<p>assign(‘Server’, ‘MS1,MS2’,‘Cluster’,‘WLSTCluster’)</p>
+</li>
+<li>
+<p>cd(‘Cluster/WLSTCluster’)</p>
+</li>
+<li>
+<p>set(‘MulticastAddress’, ‘237.0.0.101’)</p>
+</li>
+<li>
+<p>set(‘MulticastPort’, 8050)</p>
+</li>
+<li>
+<p>set(‘WeblogicPluginEnabled’, ‘true’)</p>
+</li>
+<li>
+<p><em># Create a new application deployment - Deployment Archive : “d:/Lou/VersionInfo.war”</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Deploying application named VersionInfo from d:<strong>\L</strong>ou**\V**ersionInfo.war’)</p>
+</li>
+<li>
+<p>cd(’/’)</p>
+</li>
+<li>
+<p>myApp=create(‘VersionInfo’, ‘AppDeployment’)</p>
+</li>
+<li>
+<p>myApp.setSourcePath(‘d:/Lou/VersionInfo.war’)</p>
+</li>
+<li>
+<p>assign(‘AppDeployment’, ‘VersionInfo’, ‘Target’, ‘WLSTCluster’)</p>
+</li>
+<li>
+<p><em># updating the changes</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Finalizing the changes’)</p>
+</li>
+<li>
+<p>updateDomain()</p>
+</li>
+<li>
+<p>closeDomain()</p>
+</li>
+<li>
+<p><em># Exiting</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Exiting…’)</p>
+</li>
+<li>
+<p>exit()</p>
+</li>
+<li>
+<p><em># Code written by:</em></p>
+</li>
+<li>
+<p><em># Unnikrishnan Pillai</em></p>
+</li>
+</ol>
+<p>---</p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

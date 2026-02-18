@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Configuring JMS Bridges on Weblogic Server — unni@dropzone</title><meta name="description" content="Configuring JMS Bridges on Weblogic Server"><link rel="canonical" href="https://unnipillai.com/blog/configuring-jms-bridges-on-weblogic_07/"><meta property="og:title" content="Configuring JMS Bridges on Weblogic Server — unni@dropzone"><meta property="og:description" content="Configuring JMS Bridges on Weblogic Server"><meta property="og:url" content="https://unnipillai.com/blog/configuring-jms-bridges-on-weblogic_07/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Configuring JMS Bridges on Weblogic Server</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2010-04-07T00:00:00.000Z">April 7, 2010</time> </div> </div> </header> <div class="prose">  <p>Configuring JMS Bridges on Weblogic Server</p>
+<p>Some background on JSM Bridges:</p>
+<blockquote>
+<p>·       The bridge allows you to configure a forwarding mechanism between any two messaging products (WLS-WLS-any version, WLS to any 3rd party JMS vendor, any 3rd party vendor - anyother 3rd party vendor)</p>
+</blockquote>
+<blockquote>
+<p>·       A messaging bridge connects two actual destinations that are mapped to bridge destinations: a source destination from which messages are received, and a target destination to which messages are sent.</p>
+</blockquote>
+<p>Advantages of using a Messaging Bridge:</p>
+<ol>
+<li>
+<ol>
+<li>
+<p>A messaging bridge provides high availability for remote destinations. Store and forward messaging enables a local client to produce to a local destination and have those messages automatically forwarded to the remote destination when it is available</p>
+</li>
+<li>
+<p>This allows a local client to continue to produce messages when a remote destination is not available</p>
+</li>
+<li>
+<p>Allowing transparency</p>
+</li>
+<li>
+<p>Replicating a Topic</p>
+</li>
+<li>
+<p>A messaging bridge can be used to replicate a topic, similar to using the distributed topics feature</p>
+</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p><em><strong>WLS Bridges support these three types of QOS(Quality of Service) levels:</strong></em></p>
+</blockquote>
+<ol start="6">
+<li>
+<ol start="6">
+<li>
+<p>Exactly-once—The highest QOS guarantees that a message is sent to the remote endpoint once and only once. With Exactly-once, messages survive server crashes and network down time, while guaranteeing one occurrence of each message at the endpoint.</p>
+</li>
+<li>
+<p>At-least-once—Guarantees that a message is sent to the remote endpoint, but with the possibility of duplicates. With At-least-once, multiple copies of a message might show up on the remote endpoint because of network failures or server crashes that occur when the message is in transit.</p>
+</li>
+<li>
+<p>At-most-once—The lowest QOS guarantees that each message is sent to the remote endpoint only once, if at all. It does not guarantee that a message is sent to the endpoint. With At-most-once, messages may get lost because of network failures or server crashes. No duplicate messages will reach the endpoint.</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>[</p>
+<p><img src="http://docs.google.com/File?id=dt75g78_312crdpwrdz_b" alt=""></p>
+<p>](<a href="http://docs.google.com/File?id=dt75g78_312crdpwrdz_b">http://docs.google.com/File?id=dt75g78_312crdpwrdz_b</a>)</p>
+<p>Architecture for this PoC:</p>
+<p>[</p>
+<p><img src="http://docs.google.com/File?id=dt75g78_313ghqxhvwf_b" alt=""></p>
+<p>](<a href="http://docs.google.com/File?id=dt75g78_313ghqxhvwf_b">http://docs.google.com/File?id=dt75g78_313ghqxhvwf_b</a>)</p>
+<p>Step by Step Instructions:</p>
+<blockquote>
+<p>1.    Create new domain named <strong>‘LocalDomain’</strong> with admin server listening on 7001</p>
+</blockquote>
+<blockquote>
+<p>2.    Follow the below steps to create WLS resources in the domain:</p>
+</blockquote>
+<blockquote>
+<p>i.       **Local and Edit**</p>
+</blockquote>
+<blockquote>
+<p>ii.     Create a JMS Server (LocalJMSServer)</p>
+</blockquote>
+<blockquote>
+<p>iii.   Create a new store(FileStore0)</p>
+</blockquote>
+<blockquote>
+<p>iv.   Associate JMS Server to FileStore0</p>
+</blockquote>
+<blockquote>
+<p>v.     Target to Admin Server</p>
+</blockquote>
+<blockquote>
+<p>vi.   Create a  new JMS Module</p>
+</blockquote>
+<blockquote>
+<p>vii. Deploy it to the Admin Server</p>
+</blockquote>
+<blockquote>
+<p>viii.                      Create new Connection Factory (JNDI: JMS/LocalCF)</p>
+</blockquote>
+<blockquote>
+<p>ix.   Create a new source Queue (JNDI: JMS/LocalQ)</p>
+</blockquote>
+<blockquote>
+<p>x.     Click on New Sub Deployment -> name it LocalQSub -> target it to LocalJMSServer</p>
+</blockquote>
+<blockquote>
+<p>xi.   **Activate Changes**</p>
+</blockquote>
+<blockquote>
+<p>xii. Restart for changes to come into effect</p>
+</blockquote>
+<blockquote>
+<p>3.    Create new domain named <strong>‘RemoteDomain’</strong> with admin server listening on 8001</p>
+</blockquote>
+<blockquote>
+<p>4.    Follow the below steps to create WLS resources in this domain:</p>
+</blockquote>
+<blockquote>
+<p>xiii.                      **Local and Edit**</p>
+</blockquote>
+<blockquote>
+<p>xiv.                      Create a JMS Server (RemoteJMSServer)</p>
+</blockquote>
+<blockquote>
+<p>xv. Create a new store(FileStore0)</p>
+</blockquote>
+<blockquote>
+<p>xvi.                      Associate JMS Server to FileStore0</p>
+</blockquote>
+<blockquote>
+<p>xvii.                    Target to Admin Server</p>
+</blockquote>
+<blockquote>
+<p>xviii.                  Create a  new JMS Module</p>
+</blockquote>
+<blockquote>
+<p>xix.                      Deploy it to the Admin Server</p>
+</blockquote>
+<blockquote>
+<p>xx. Create new Connection Factory (JNDI: JMS/RemoteCF)</p>
+</blockquote>
+<blockquote>
+<p>xxi.                      Create a new source Queue (JNDI: JMS/RemoteQ)</p>
+</blockquote>
+<blockquote>
+<p>xxii.                    Click on New Sub Deployment -> name it RemoteQSub -> target it to RemoteJMSServer</p>
+</blockquote>
+<blockquote>
+<p>xxiii.                  **Activate Changes**</p>
+</blockquote>
+<blockquote>
+<p>xxiv.                  Restart for changes to come into effect</p>
+</blockquote>
+<blockquote>
+<p>xxv.                    Click on Services > Messaging > Bridges > <strong>JMS Bridge Destinations</strong></p>
+</blockquote>
+<blockquote>
+<p>xxvi.                  **Local and Edit**</p>
+</blockquote>
+<blockquote>
+<p>xxvii.                Create a New JMS Bridge Destination >> Name: LocalQ >> Connection URL: t3://LocallIP:7001 >> Connection Factory JNDI Name: JMS/LocalCF >> Destination JNDI Name: JMS/LocalQ</p>
+</blockquote>
+<blockquote>
+<p>xxviii.              Create a New JMS Bridge Destination >> Name: RemoteQ >> Connection URL: t3://RemoteIP:8001 >> Connection Factory JNDI Name: JMS/RemoteCF >> Destination JNDI Name: JMS/RemoteQ</p>
+</blockquote>
+<blockquote>
+<p>xxix.                  **Activate Changes**</p>
+</blockquote>
+<blockquote>
+<p>xxx.                    **Local and Edit**</p>
+</blockquote>
+<blockquote>
+<p>xxxi.                  Click on Services > Messaging > <strong>Bridges</strong></p>
+</blockquote>
+<blockquote>
+<p>xxxii.                Create New JMS Bridge >> Name: JMSBridge >> Quality Of Service: Almost-once >> Check Started >> Existing Source Destination: LocalQ >> Existing Target Destination: RemoteQ >> Target it AdminServer</p>
+</blockquote>
+<blockquote>
+<p>xxxiii.              **Activate Changes**</p>
+</blockquote>
+<blockquote>
+<p>5.    Make your producer listen on t3:// LocalIP:7001 and Connection Factory: JMS.LocalCF and Destination Queue: LocalQ</p>
+</blockquote>
+<blockquote>
+<p>6.    Make your consumer listen on t3:// RemoteIP:8001 and Connection Factory: JMS.RemoteCF and Destination Queue: RemoteQ</p>
+</blockquote>
+<p>Producer / Consumer Screenshots:</p>
+<p>[</p>
+<p><img src="http://docs.google.com/File?id=dt75g78_314grmjxzc3_b" alt=""></p>
+<p>](<a href="http://docs.google.com/File?id=dt75g78_314grmjxzc3_b)%5B">http://docs.google.com/File?id=dt75g78_314grmjxzc3_b)[</a></p>
+<p><img src="http://docs.google.com/File?id=dt75g78_315hnhvdq2z_b" alt=""></p>
+<p>](<a href="http://docs.google.com/File?id=dt75g78_315hnhvdq2z_b">http://docs.google.com/File?id=dt75g78_315hnhvdq2z_b</a>)</p>
+<p>Further Reading:</p>
+<blockquote>
+<p>·       <a href="http://download.oracle.com/docs/cd/E11035_01/wls100/bridge/design.html#wp1172930">http://download.oracle.com/docs/cd/E11035_01/wls100/bridge/design.html#wp1172930</a></p>
+</blockquote>
+<blockquote>
+<p>·       <a href="http://download.oracle.com/docs/cd/E11035_01/wls100/bridge/bridgeTOC.html">http://download.oracle.com/docs/cd/E11035_01/wls100/bridge/bridgeTOC.html</a></p>
+</blockquote>
+<blockquote>
+<p>·       <a href="http://download.oracle.com/docs/cd/E11035_01/wls100/bridge/bridgefaq.html">http://download.oracle.com/docs/cd/E11035_01/wls100/bridge/bridgefaq.html</a></p>
+</blockquote>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

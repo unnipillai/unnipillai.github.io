@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Insights from Amazon Science: Smarter Experimentation (Beyond your typical A/B Testing) — unni@dropzone</title><meta name="description" content="This post to explore the practical applicability of a fascinating piece of research published by Amazon Science research paper published in 2024."><link rel="canonical" href="https://unnipillai.com/blog/insights-from-amazon-science-smarter/"><meta property="og:title" content="Insights from Amazon Science: Smarter Experimentation (Beyond your typical A/B Testing) — unni@dropzone"><meta property="og:description" content="This post to explore the practical applicability of a fascinating piece of research published by Amazon Science research paper published in 2024."><meta property="og:url" content="https://unnipillai.com/blog/insights-from-amazon-science-smarter/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Insights from Amazon Science: Smarter Experimentation (Beyond your typical A/B Testing)</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2025-02-12T00:00:00.000Z">February 12, 2025</time> </div> </div> </header> <div class="prose">  <p><img src="https://substack-post-media.s3.amazonaws.com/public/images/16366cd1-8de3-4e19-8646-a60063f9af14_2178x898.png" alt=""></p>
+<p>This post to explore the practical applicability of a fascinating piece of research published by Amazon Science research paper published in 2024.</p>
+<blockquote>
+<p><a href="https://www.amazon.science/publications/adaptive-experimentation-when-you-cant-experiment">Adaptive Experimentation When You Can’t Experiment</a>✍️ <em>Yao Zhao, Kwang-Sung Jun,</em> <a href="https://www.linkedin.com/in/tannerfiez?miniProfileUrn=urn%3Ali%3Afs_miniProfile%3AACoAABQqMXgBujjv-a46okTAfuhgqFfg3DhdwcY">Tanner Fiez</a> <em>, Lalit Jain</em></p>
+</blockquote>
+<p>Amazon has long been at the forefront of <strong>sustainable research</strong>—not just theoretical advances, but <strong>applied science that solves real-world problems in real time</strong>. This paper is a great example of that ethos: it tackles a major challenge businesses face, the problem isn’t just academic—it impacts a wide range of industries.</p>
+<p>So, how can we <em>apply this research</em> to real-world commercial use cases?</p>
+<hr>
+<h3 id="-the-challenge-when-ab-testing-fails-in-business">🔍 The Challenge: When A/B Testing Fails in Business</h3>
+<p>Imagine these industry-specific scenarios where running a <strong>traditional A/B test is not straight forward</strong>:</p>
+<ul>
+<li>
+<p><strong>Fintech (Wallet &#x26; Payments)</strong> → You want to test if <strong>higher cash-back incentives</strong> improve retention, but you <strong>can’t randomly assign</strong> different rates without confusing users.</p>
+</li>
+<li>
+<p><strong>Retail Banking</strong> → You want to test if a <strong>higher savings interest rate</strong> encourages deposits, but <strong>regulations (may) prevent arbitrary interest rate assignments</strong>.</p>
+</li>
+<li>
+<p><strong>Telecom (Mobile, Landline &#x26; Broadband)</strong> → You want to see if a <strong>mobile + broadband bundle</strong> increases retention, but <strong>forcing users into different pricing groups could backfire</strong>.</p>
+</li>
+</ul>
+<p>In all these cases, direct experimentation might not be feasible due to compliance risks, self-selection bias, or business constraints.</p>
+<hr>
+<h3 id="the-smarter-approach-adaptive-experimentation">The Smarter Approach: Adaptive Experimentation</h3>
+<p>Instead of <strong>direct A/B testing</strong>, companies can use <strong>randomized encouragements</strong> to <strong>nudge</strong> user behaviour while still learning what works:</p>
+<ul>
+<li>
+<p><strong>Fintech</strong> → Offer a subset of users a <strong>limited-time trial of higher cash-back</strong> and track <strong>who opts in &#x26; how their spending changes</strong>.</p>
+</li>
+<li>
+<p><strong>Retail Banking</strong> → Offer a <strong>temporary promotional rate</strong> to certain customers and measure <strong>if it leads to long-term savings growth</strong>.</p>
+</li>
+<li>
+<p><strong>Telecom</strong> → Give customers a <strong>3-month free trial of a mobile + broadband bundle</strong> and analyze <strong>if they stick with it afterward</strong>.</p>
+</li>
+</ul>
+<p>This method allows businesses to <strong>learn customer preferences dynamically</strong> while avoiding the downsides of forced experimentation.</p>
+<p><img src="https://substack-post-media.s3.amazonaws.com/public/images/16366cd1-8de3-4e19-8646-a60063f9af14_2178x898.png" alt=""></p>
+<hr>
+<h3 id="-the-science-behind-it-filtering-out-bias">🔬 The Science Behind It: Filtering Out Bias</h3>
+<p><a href="https://www.amazon.science/publications/adaptive-experimentation-when-you-cant-experiment">(Read the paper)</a></p>
+<ul>
+<li>
+<p>What makes this different from simple promotions? It’s built on instrumental variable (IV) analysis, a technique from econometrics that removes selection bias:</p>
+</li>
+<li>
+<p>Customers self-select into offers, but we filter out natural bias (e.g., high spenders already opting for better incentives).</p>
+</li>
+<li>
+<p>You apply an adaptive learning algorithm to dynamically adjust pricing, incentives, and bundling based on real behavior.</p>
+</li>
+<li>
+<p>Instead of costly trial-and-error, businesses optimize in real time while staying compliant &#x26; fair.</p>
+</li>
+</ul>
+<hr>
+<h3 id="-why-this-matters">📈 Why This Matters ?</h3>
+<p>This approach enables:</p>
+<ul>
+<li>
+<p><strong>Faster, more cost-effective optimization</strong> (no wasted A/B test groups). 🔍 <strong>Better decision-making with minimal bias</strong> (true cause-and-effect insights).</p>
+</li>
+<li>
+<p><strong>Fair &#x26; transparent offers</strong> (staying within business and regulatory constraints).</p>
+</li>
+<li>
+<p>The telecom, banking, and fintech examples <strong>all share the same fundamental challenge</strong>—<strong>A/B testing isn’t always an option, but smarter adaptive experimentation is.</strong></p>
+</li>
+</ul>
+<p><strong>BibTeX Citation:</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>@Article{Zhao2024,</span></span>
+<span class="line"><span>  author = {Yao Zhao and Kwang-Sung Jun and Tanner Fiez and Lalit Jain},</span></span>
+<span class="line"><span>  title = {Adaptive experimentation when you can’t experiment},</span></span>
+<span class="line"><span>  year = {2024},</span></span>
+<span class="line"><span>  url = {https://www.amazon.science/publications/adaptive-experimentation-when-you-cant-experiment},</span></span>
+<span class="line"><span>} </span></span></code></pre>
+<h3 id="️-disclaimer">⚠️ Disclaimer</h3>
+<p><em>The views expressed here are my own and do not represent the opinions of my past / current / future employer(s).</em></p>
+<p>/ Unni</p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

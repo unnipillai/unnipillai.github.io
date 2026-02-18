@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Creating a JDBC Data Source using WLST — unni@dropzone</title><meta name="description" content="Hiya,Last night I was trying to create a JDBC Data Source using WLST for one of my colleagues.After a lot of hit-n-trial I was able to do it, so thought I would share it here.May come handing sometime"><link rel="canonical" href="https://unnipillai.com/blog/creating-jdbc-data-source-using-wlst_20/"><meta property="og:title" content="Creating a JDBC Data Source using WLST — unni@dropzone"><meta property="og:description" content="Hiya,Last night I was trying to create a JDBC Data Source using WLST for one of my colleagues.After a lot of hit-n-trial I was able to do it, so thought I would share it here.May come handing sometime"><meta property="og:url" content="https://unnipillai.com/blog/creating-jdbc-data-source-using-wlst_20/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Creating a JDBC Data Source using WLST</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2009-02-20T00:00:00.000Z">February 20, 2009</time> </div> </div> </header> <div class="prose">  <p>Hiya,</p>
+<p>Last night I was trying to create a JDBC Data Source using WLST for one of my colleagues.<br>
+After a lot of hit-n-trial I was able to do it, so thought I would share it here.<br>
+May come handing sometime while writing scripts to automate domain creations. ;)</p>
+<p>-</p>
+<h1 id="written-by-unni-on-fri-20-feb-1513-ist-download"><strong>Written by Unni on Fri 20 Feb 15:13 (IST) <a href="http://pastebin.com/pastebin.php?dl=f1e19f243" title="download file">download</a></strong></h1>
+<ol>
+<li>
+<p><em># This python program would create a DataSource named ‘DS1’ and targets it to (AdminServer and MS).</em></p>
+</li>
+<li>
+<p><em># Please change the code as per your environment and needs:</em></p>
+</li>
+<li>
+<p><em># Change the username and password with admin username and password.</em></p>
+</li>
+<li>
+<p><em>#please change the localhost:7001 with he ip address:portnumber</em></p>
+</li>
+<li>
+<p><strong>print</strong>(‘Starting…’)</p>
+</li>
+<li>
+<p>connect(‘weblogic’,‘weblogic’,‘t3://localhost:7001’)</p>
+</li>
+<li>
+<p><strong>print</strong>(‘Starting a edit session’)</p>
+</li>
+<li>
+<p>edit()</p>
+</li>
+<li>
+<p>startEdit()</p>
+</li>
+<li>
+<p><em># Create a new Mbean ( a JDBC resource)</em></p>
+</li>
+<li>
+<p>cd(’/’)</p>
+</li>
+<li>
+<p>cmo.createJDBCSystemResource(‘DS1’)</p>
+</li>
+<li>
+<p><em>#Naming the datasource</em></p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1/JDBCResource/DS1’)</p>
+</li>
+<li>
+<p>cmo.setName(‘DS1’)</p>
+</li>
+<li>
+<p><em>#Setting JNDI name</em></p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1/JDBCResource/DS1/JDBCDataSourceParams/DS1’)</p>
+</li>
+<li>
+<p>set(‘JNDINames’,jarray.array([String(‘DS1’)], String))</p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1/JDBCResource/DS1/JDBCDriverParams/DS1’)</p>
+</li>
+<li>
+<p>cmo.setUrl(‘jdbc:pointbase:server://localhost:9092/demo’)</p>
+</li>
+<li>
+<p>cmo.setDriverName(‘com.pointbase.xa.xaDataSource’)</p>
+</li>
+<li>
+<p>cmo.setPassword(‘PBPUBLIC’)</p>
+</li>
+<li>
+<p><em>#Set Connection Pool specific parameters</em></p>
+</li>
+<li>
+<p><em># refer: <a href="http://e-docs.bea.com/wls/docs92/wlsmbeanref/mbeans/JDBCConnectionPoolParamsBean.html">e-docs.bea.com/wls/docs92/wlsmbeanref/mbeans/JDBCConnectionPoolParamsBean.html</a></em></p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1/JDBCResource/DS1/JDBCConnectionPoolParams/DS1’)</p>
+</li>
+<li>
+<p>cmo.setTestConnectionsOnReserve(true)</p>
+</li>
+<li>
+<p>cmo.setTestTableName(‘SYSTABLES’)</p>
+</li>
+<li>
+<p>cmo.setConnectionReserveTimeoutSeconds(25)</p>
+</li>
+<li>
+<p>cmo.setMaxCapacity(20)</p>
+</li>
+<li>
+<p>cmo.setConnectionReserveTimeoutSeconds(10)</p>
+</li>
+<li>
+<p>cmo.setTestFrequencySeconds(360)</p>
+</li>
+<li>
+<p><em># Setting the user name</em></p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1/JDBCResource/DS1/JDBCDriverParams/DS1/Properties/DS1’)</p>
+</li>
+<li>
+<p>cmo.createProperty(‘user’)</p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1/JDBCResource/DS1/JDBCDriverParams/DS1/Properties/DS1/Properties/user’)</p>
+</li>
+<li>
+<p>cmo.setValue(‘PBPUBLIC’)</p>
+</li>
+<li>
+<p><em># Setting the database name</em></p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1/JDBCResource/DS1/JDBCDriverParams/DS1/Properties/DS1’)</p>
+</li>
+<li>
+<p>cmo.createProperty(‘databaseName’)</p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1/JDBCResource/DS1/JDBCDriverParams/DS1/Properties/DS1/Properties/databaseName’)</p>
+</li>
+<li>
+<p>cmo.setValue(‘jdbc:pointbase:server://localhost:9092/demo’)</p>
+</li>
+<li>
+<p><em># Transaction</em></p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1/JDBCResource/DS1/JDBCDataSourceParams/DS1’)</p>
+</li>
+<li>
+<p>cmo.setGlobalTransactionsProtocol(‘TwoPhaseCommit’)</p>
+</li>
+<li>
+<p>cd(‘/JDBCSystemResources/DS1’)</p>
+</li>
+<li>
+<p><em># targets the DS1 to Servers(AdminServer,MS)</em></p>
+</li>
+<li>
+<p>set(‘Targets’,jarray.array([ObjectName(‘com.bea:Name=AdminServer,Type=Server’), ObjectName(‘com.bea:Name=MS,Type=Server’)], ObjectName))</p>
+</li>
+<li>
+<p>activate()</p>
+</li>
+<li>
+<p><strong>print</strong>(‘Exiting…’)</p>
+</li>
+<li>
+<p>exit()</p>
+</li>
+<li>
+<p><em># Code written by:</em></p>
+</li>
+<li>
+<p><em># Unnikrishnan Pillai,</em></p>
+</li>
+<li>
+<p><em># Engineer,</em></p>
+</li>
+<li>
+<p><em># Oracle Global Support</em></p>
+</li>
+</ol>
+<p>-<br>
+MultiDataSources coming soon…</p>
+<p>Now have 2 get back to work ;)</p>
+<p><strong>Unni</strong></p>
+<p><strong><a href="mailto:unni@unnikrishnanpillai.tk">unni@unnikrishnanpillai.tk</a></strong></p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

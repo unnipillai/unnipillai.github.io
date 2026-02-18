@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>IAM policy for controlling EC2 with specific tags — unni@dropzone</title><meta name="description" content="Unnikrishnan Pillai — writing about cloud, platform engineering, and technology."><link rel="canonical" href="https://unnipillai.com/blog/iam-policy-for-controlling-ec2-with/"><meta property="og:title" content="IAM policy for controlling EC2 with specific tags — unni@dropzone"><meta property="og:description" content="Unnikrishnan Pillai — writing about cloud, platform engineering, and technology."><meta property="og:url" content="https://unnipillai.com/blog/iam-policy-for-controlling-ec2-with/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>IAM policy for controlling EC2 with specific tags</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2015-10-23T00:00:00.000Z">October 23, 2015</time> </div> </div> </header> <div class="prose">  <p><img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?crop=entropy&#x26;cs=tinysrgb&#x26;fit=max&#x26;fm=jpg&#x26;ixid=M3wzMDAzMzh8MHwxfHNlYXJjaHw1fHxzZWN1cml0eXxlbnwwfHx8fDE3NDIzNjMyMzB8MA&#x26;ixlib=rb-4.0.3&#x26;q=80&#x26;w=1080" alt="red padlock on black computer keyboard"></p>
+<p>Currently, EC2:DESCRIBE* IAM actions ‘does not support resource-level permissions’,  which makes it difficult to have a ‘filter on ec2 instances based on who created them’.<br>
+(see : <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-iam-actions-resources.html">http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-supported-iam-actions-resources.html</a>)</p>
+<p>However, we can prevent users from terminating, stoping or starting EC2 which are not tagged to them. (See IAM policy below)</p>
+<p>Step 1 : Use the approach described in this blog post to achieve something similar to what you are looking for : (tagging instances at start up)<br>
+(See : <a href="https://blogs.aws.amazon.com/net/post/Tx2CCTE5QGSFDUW/Tagging-Amazon-EC2-Instances-at-Launch">https://blogs.aws.amazon.com/net/post/Tx2CCTE5QGSFDUW/Tagging-Amazon-EC2-Instances-at-Launch</a>)</p>
+<p>Step 2 : limiting access on who can stop/terminate/start the instance.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span> {  </span></span>
+<span class="line"><span>   "Version": "2012-10-17",  </span></span>
+<span class="line"><span>   "Statement": [  </span></span>
+<span class="line"><span>     {  </span></span>
+<span class="line"><span>       "Sid": "StmtAllowDescribeOnEC2",  </span></span>
+<span class="line"><span>       "Effect": "Allow",  </span></span>
+<span class="line"><span>       "Action": [  </span></span>
+<span class="line"><span>         "ec2:Describe*"  </span></span>
+<span class="line"><span>       ],  </span></span>
+<span class="line"><span>       "Resource": [  </span></span>
+<span class="line"><span>         "*"  </span></span>
+<span class="line"><span>       ]  </span></span>
+<span class="line"><span>     },  </span></span>
+<span class="line"><span>     {  </span></span>
+<span class="line"><span>       "Sid": "AllowModifyForEc2OwnerTagOnly",  </span></span>
+<span class="line"><span>       "Effect": "Allow",  </span></span>
+<span class="line"><span>       "Action": [  </span></span>
+<span class="line"><span>         "ec2:TerminateInstances",  </span></span>
+<span class="line"><span>         "ec2:StopInstances",  </span></span>
+<span class="line"><span>         "ec2:StartInstances"  </span></span>
+<span class="line"><span>       ],  </span></span>
+<span class="line"><span>       "Resource": "arn:aws:ec2:ap-southeast-1:1234567890:instance/*",  </span></span>
+<span class="line"><span>       "Condition": {  </span></span>
+<span class="line"><span>         "StringEquals": {  </span></span>
+<span class="line"><span>           "ec2:ResourceTag/ec2_owner": "${aws:username}"  </span></span>
+<span class="line"><span>         }  </span></span>
+<span class="line"><span>       }  </span></span>
+<span class="line"><span>     }  </span></span>
+<span class="line"><span>   ]  </span></span>
+<span class="line"><span> }  </span></span></code></pre>
+<p>Here ec2_owner is the name of the tag that has to be mandated when the instance is created either via EC2 management APIs / CLI.</p>
+<p>Or, you can be a bit more strict and write a logic inside the ec2 instance which checks ‘do I have a ec2_owner tag on me ? - If ‘No’ then terminate myself.</p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Weblogic side by side deployment — unni@dropzone</title><meta name="description" content="Weblogic Server supports a nice feature called side-by-side deployment (or versioned deployment). This function is extremely usefull when you need to deploy a new version of an application and still k"><link rel="canonical" href="https://unnipillai.com/blog/weblogic-side-by-side-deployment/"><meta property="og:title" content="Weblogic side by side deployment — unni@dropzone"><meta property="og:description" content="Weblogic Server supports a nice feature called side-by-side deployment (or versioned deployment). This function is extremely usefull when you need to deploy a new version of an application and still k"><meta property="og:url" content="https://unnipillai.com/blog/weblogic-side-by-side-deployment/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Weblogic side by side deployment</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2009-12-05T00:00:00.000Z">December 5, 2009</time> </div> </div> </header> <div class="prose">  <p>Weblogic Server supports a nice feature called side-by-side deployment (or versioned deployment). This function is extremely usefull when you need to deploy a new version of an application and still keep the old one up and running. So the running instances will still use the current version and all new instances will be able to invoke the new deployed version of the application.<br>
+As soon as all the sessions who’re using the old version of the application are expired, Weblogic will recognize it and will deactivate the old version. So at this moment only the new deployed version is active and all new sessions will make us of it.</p>
+<p>So how does this work.</p>
+<p>You could either use wlst to deploy the application and specifiy the versionnumber on deployment as one of the parameters or you can use the manifest.mf file. We’ll be using the last one.</p>
+<ol>
+<li>
+<p>Create a webservice project</p>
+</li>
+<li>
+<p>Edit to manifest file located in WebContent > META-INF and add the next on a new row : ‘WebLogic-Application-Version: v1′</p>
+<p>[</p>
+<p><img src="https://substack-post-media.s3.amazonaws.com/public/images/c2d6a37e-31b4-42f1-a233-4ca2bdc575cc_400x100.png" alt="manifest" title="manifest"></p>
+<p>](<a href="https://substackcdn.com/image/fetch/$s_!AuVb!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc2d6a37e-31b4-42f1-a233-4ca2bdc575cc_400x100.png">https://substackcdn.com/image/fetch/$s_!AuVb!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc2d6a37e-31b4-42f1-a233-4ca2bdc575cc_400x100.png</a>)</p>
+</li>
+<li>
+<p>Package the service and deploy it in the console</p>
+</li>
+</ol>
+<p><strong>Deployment</strong></p>
+<ol>
+<li>
+<p>Go to the Weblogic Console > Deployments. Click ‘Lock &#x26; Edit’ and in the deployments part click Install</p>
+</li>
+<li>
+<p>Select the just created archive</p>
+<p>[</p>
+<p><img src="https://substack-post-media.s3.amazonaws.com/public/images/8d28c20d-5ef0-4df6-ba73-68048c5161b8_454x93.png" alt="install-1" title="install-1"></p>
+<p>](<a href="https://substackcdn.com/image/fetch/$s_!bF1V!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8d28c20d-5ef0-4df6-ba73-68048c5161b8_454x93.png">https://substackcdn.com/image/fetch/$s_!bF1V!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8d28c20d-5ef0-4df6-ba73-68048c5161b8_454x93.png</a>)</p>
+</li>
+<li>
+<p>Install this deployment as an application</p>
+</li>
+<li>
+<p>Optional Settings. And in here we will see the ‘Archive Version’ of our application. Change the name to ‘MyService’ and leave the rest on default value</p>
+<p>[</p>
+<p><img src="https://substack-post-media.s3.amazonaws.com/public/images/03317c88-bacb-42ba-bfcb-82cef98d65fc_455x174.png" alt="install-2" title="install-2"></p>
+<p>](<a href="https://substackcdn.com/image/fetch/$s_!-0HR!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F03317c88-bacb-42ba-bfcb-82cef98d65fc_455x174.png">https://substackcdn.com/image/fetch/$s_!-0HR!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F03317c88-bacb-42ba-bfcb-82cef98d65fc_455x174.png</a>)</p>
+</li>
+</ol>
+<p>If you look in the list of deployments we will see our application is labeled with a version indication (v1).</p>
+<p>The current version is still active.</p>
+<p>Now create a new version of the application and change the v1 in the manifest file to v2, and package it.</p>
+<p><strong>Update Deployment</strong></p>
+<ol>
+<li>
+<p>Go to the Weblogic Console > Deployments. Click ‘Lock &#x26; Edit’, select the application we want to update (MyService) and in the deployments part click Update</p>
+</li>
+<li>
+<p>Click Change Path of the source path and select the just created archive (v2), the application will be deployed as version v2</p>
+</li>
+</ol>
+<p>If we now look in the list of deployments, we will see 2 versions of our application deployed.</p>
+<p>Version v1 gets status ‘Retired’ and the new version v2 will get status ‘Active’.</p>
+<p><strong>Running instances</strong><br>
+We have the next scenarios</p>
+<ol>
+<li>
+<p>Version v1 is deployed. Deploy version v2. The new version v2 will get status ‘Active’ and the old version v1 will get status ‘Retired’.<br>
+Since there aren’t any open sessions Weblogic will recognize this and changed the status of the version v1</p>
+</li>
+<li>
+<p>Version v1 is deployed and has open sessions. Deploy version v2. The new version v2 will get status ‘Active’ and the old version v1 will stay on status ‘Active’ untill all sessions to it will be closes. After that, Weblogic will change the status to ‘Retired’ and the only ‘Active’ version will be v2</p>
+</li>
+</ol>
+<p>Text borrowed from:</p>
+<p>- Eric Elzinga’s blog (<a href="http://eelzinga.wordpress.com/">http://eelzinga.wordpress.com/</a>)</p>
+<p>A video tutorial on:</p>
+<p>- <a href="http://download.oracle.com/otn_hosted_doc/wls/redeployment/wls-side-by-side-non-annotation_viewlet_swf.html">http://download.oracle.com/otn_hosted_doc/wls/redeployment/wls-side-by-side-non-annotation_viewlet_swf.html</a></p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

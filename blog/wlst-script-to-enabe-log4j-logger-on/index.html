@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>WLST Script to enabe Log4j Logger on a weblogic server — unni@dropzone</title><meta name="description" content="WebLogic logging services use an implementation based on the Java Logging APIs, by default. Using the LogMBean.isLog4jLoggingEnabled attribute, you can direct the logging services to use Log4j instead"><link rel="canonical" href="https://unnipillai.com/blog/wlst-script-to-enabe-log4j-logger-on/"><meta property="og:title" content="WLST Script to enabe Log4j Logger on a weblogic server — unni@dropzone"><meta property="og:description" content="WebLogic logging services use an implementation based on the Java Logging APIs, by default. Using the LogMBean.isLog4jLoggingEnabled attribute, you can direct the logging services to use Log4j instead"><meta property="og:url" content="https://unnipillai.com/blog/wlst-script-to-enabe-log4j-logger-on/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>WLST Script to enabe Log4j Logger on a weblogic server</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2010-01-18T00:00:00.000Z">January 18, 2010</time> </div> </div> </header> <div class="prose">  <p>WebLogic logging services use an implementation based on the Java Logging APIs, by default. Using the LogMBean.isLog4jLoggingEnabled attribute, you can direct the logging services to use Log4j instead.</p>
+<h1 id="posted-by-unni-start-wlst"><strong>Posted by Unni</strong><em><strong># Start WLST</strong></em></h1>
+<ol>
+<li>
+<p>C:\>java weblogic.WLST</p>
+</li>
+<li>
+<p><em># connect Administration Server</em></p>
+</li>
+<li>
+<p>wls:/offline> connect(‘uname’,‘password’)</p>
+</li>
+<li>
+<p><em># Start an edit session and navigating to the logging mbean for the server names myserver</em></p>
+</li>
+<li>
+<p>wls:/mydomain/serverConfig> edit()</p>
+</li>
+<li>
+<p>wls:/mydomain/edit> startEdit()</p>
+</li>
+<li>
+<p>wls:/mydomain/edit !> cd(“Servers/myserver/Log/myserver”)</p>
+</li>
+<li>
+<p><em># enable log4j</em></p>
+</li>
+<li>
+<p>wls:/mydomain/edit/Servers/myserver/Log/myserver !> cmo.setLog4jLoggingEnabled(true)</p>
+</li>
+<li>
+<p><em>#save and activate the changes</em></p>
+</li>
+<li>
+<p>wls:/mydomain/edit/Servers/myserver/Log/myserver !> save()</p>
+</li>
+<li>
+<p>wls:/mydomain/edit/Servers/myserver/Log/myserver !> activate()</p>
+</li>
+</ol>
+<p>Java Logging is the default for client and server-side logging; Log4j is available only for server-side and not client-side logging.</p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Use &#39;userConfigFile&#39; for connecting to weblogic — unni@dropzone</title><meta name="description" content="We can use the 'storeUserConfig' command to create a user configuration file that contains your credentials in an encrypted form and a key file that Weblogic Server uses to unencrypted credentials."><link rel="canonical" href="https://unnipillai.com/blog/use-userconfigfile-for-connecting-to/"><meta property="og:title" content="Use 'userConfigFile' for connecting to weblogic — unni@dropzone"><meta property="og:description" content="We can use the 'storeUserConfig' command to create a user configuration file that contains your credentials in an encrypted form and a key file that Weblogic Server uses to unencrypted credentials."><meta property="og:url" content="https://unnipillai.com/blog/use-userconfigfile-for-connecting-to/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Use &#39;userConfigFile&#39; for connecting to weblogic</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2010-02-24T00:00:00.000Z">February 24, 2010</time> </div> </div> </header> <div class="prose">  <p>We can use the ‘storeUserConfig’ command to create a user configuration file that contains your credentials in an encrypted form and a key file that Weblogic Server uses to unencrypted credentials.</p>
+<p>And on subsequent WLST sessions (or in WLST scripts), supply the name of the user configuration file and key file instead of entering the credentials on the command line. This option is recommended if you use WLST in script mode because it prevents you from storing unencrypted user credentials in your scripts.</p>
+<p>## This script creates a user config file</p>
+<p>wls:/offline> connect(‘weblogic’,‘weblogic’,url=‘<a href="http://10.10.71.94:7001">10.10.71.94:7001</a>’)</p>
+<p>wls:/Distributed_Domain/serverConfig> storeUserConfig(‘d:/DeeptiPY/Unni-WebLogicConfig.properties’, ‘d:/DeeptiPY/Unni-WebLogicKey.properties’)</p>
+<p>## This will create two files ‘Unni-WebLogicConfig.properties’ and ‘Unni-WebLogicKey.properties’</p>
+<p>## WebLogicConfig has the encrypted username and password, WebLogicKey has the logic to decrypt them</p>
+<p>## End the current WLST session</p>
+<p>wls:/Distributed_Domain/serverConfig> exit()</p>
+<p>## Sample Script to monitor state of the server:</p>
+<p>## This demonstrates how we can connect to a server without using clear text credentials</p>
+<p>wls:/offline> connect(userConfigFile=‘d:/DeeptiPY/Unni-WebLogicConfig.properties’,userKeyFile=‘d:/DeeptiPY/Unni-WebLogicKey.properties’,url=‘t3://<a href="http://10.10.71.94:7001">10.10.71.94:7001</a>’)</p>
+<p>wls:/Distributed_Domain/serverConfig> state(‘MSLocal’)</p>
+<p>Current state of ‘MSLocal’ : RUNNING</p>
+<p>Please post your queries / comments.</p>
+<p>Cheers:)</p>
+<p>Unni</p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Weblogic Server Administration Server Interview Questions 1 of 6 — unni@dropzone</title><meta name="description" content="What are clusters?"><link rel="canonical" href="https://unnipillai.com/blog/weblogic-server-administration-server_04/"><meta property="og:title" content="Weblogic Server Administration Server Interview Questions 1 of 6 — unni@dropzone"><meta property="og:description" content="What are clusters?"><meta property="og:url" content="https://unnipillai.com/blog/weblogic-server-administration-server_04/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Weblogic Server Administration Server Interview Questions 1 of 6</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2010-08-03T00:00:00.000Z">August 3, 2010</time> </div> </div> </header> <div class="prose">  <p><img src="https://substack-post-media.s3.amazonaws.com/public/images/1d25bde5-a52c-42bd-b818-d424eb03be27_960x685.jpeg" alt="Interview, Office, Job by Artapixel | Free Photos and Images"></p>
+<ul>
+<li><strong>What are clusters?</strong></li>
+</ul>
+<blockquote>
+<p>Ø  Cluster is a logical set of multiple Weblogic Server instances running simultaneously across different geographies and working together to achieve  high availability and scalability</p>
+</blockquote>
+<blockquote>
+<p>Ø  Weblogic Server clusters support multiple algorithms for load balancing and failover: round-robin, weight-based, random, round-robin-affinity, weight-based-affinity, and random-affinity(By default, a Weblogic Server cluster will use the round-robin method)</p>
+</blockquote>
+<ul>
+<li>**What is session replication?<br>
+**</li>
+</ul>
+<blockquote>
+<p>Ø  Weblogic Server provides clustering support for servlets and JSPs by replicating ‘HTTP session state’ of clients that access servlets and JSPs through a cluster service</p>
+</blockquote>
+<blockquote>
+<p>Ø  Weblogic Server can use ‘memory, file based and database’ persistence for storing session information</p>
+</blockquote>
+<ul>
+<li><strong>How you deploy your applications on weblogic server?</strong></li>
+</ul>
+<blockquote>
+<p>Ø  Auto Deployment</p>
+</blockquote>
+<blockquote>
+<p>Ø  Console</p>
+</blockquote>
+<blockquote>
+<p>Ø  Command line – weblogic.deployer</p>
+</blockquote>
+<blockquote>
+<p>Ø  ANT / WLST</p>
+</blockquote>
+<ul>
+<li><strong>What are stating modes are available in Weblogic Server ?</strong></li>
+</ul>
+<blockquote>
+<p>Ø  Stage mode: Administration Server copies the deployment files from their original location on the Administration Server machine to the staging directories of each target server</p>
+</blockquote>
+<blockquote>
+<p>Ø  External Stage: target servers deploy using local copies of the deployment files, here the Administration Server does not automatically copy the deployment files to targeted servers in external_stage mode ; instead, you must copy the files to the staging directory of each target server before deployment.</p>
+</blockquote>
+<blockquote>
+<p>Ø  No Stage: The Administration Server does not copy deployment unit files; instead, all servers deploy using the same physical copy of the deployment files, which must be directly accessible by the Administration Server and target servers.</p>
+</blockquote>
+<ul>
+<li><strong>What is a Thread dump? How will you take in unix/linux and windows?</strong></li>
+</ul>
+<blockquote>
+<p>Ø  A Java thread dump is a way of finding out what every thread in the JVM is doing at a particular point in time. This is especially useful if your Java application sometimes seems to hang when running under load, as an analysis of the dump will show where the threads are stuck.</p>
+</blockquote>
+<blockquote>
+<p>Ø  Linux : kill -3 &#x3C;ps_id></p>
+</blockquote>
+<blockquote>
+<p>Ø  Windows (console mode) : crtl+break</p>
+</blockquote>
+<blockquote>
+<p>Ø  Windows (service) : beasvc -dump -svcname:mydomain_myserver</p>
+</blockquote>
+<ul>
+<li><strong>How should u look for in a Thread Dump?</strong></li>
+</ul>
+<blockquote>
+<p>Ø  Always have 7-10 thread dumps taken in an interval of 5 seconds each</p>
+</blockquote>
+<blockquote>
+<p>Ø  A thread dump will give you an insight on what every thread in the JVM is currently doing</p>
+</blockquote>
+<blockquote>
+<p>Ø  While analyzing the thread dump you should be looking for stuck threads (threads which have not moved from a long time) – could be a resource (file / db) lock not allowing the thread to complete the task and free the monitor</p>
+</blockquote>
+<blockquote>
+<p>Ø  Look for thread locsk(if two threads store references to different objects into the same reference value, the variable will subsequently contain a reference to one object or the other, not a reference to some other object or a corrupted reference value)</p>
+</blockquote>
+<blockquote>
+<p>Ø  Look for recursive loops in application / server code traces, usually hampers server performance by utilizing CPU</p>
+</blockquote>
+<ul>
+<li><strong>What is difference between 8.1 and 9.2, 10.x versions?</strong></li>
+</ul>
+<blockquote>
+<p>Ø  8.1 uses JDK 1.4.2 ; 9.2/10.0 uses JDK 1.5 ; 10.3 uses JDK 1.6</p>
+</blockquote>
+<blockquote>
+<p>Ø  8.1 uses execute worker threads ; 9.2/10/10.3 uses work manager for work load distribution within the server</p>
+</blockquote>
+<blockquote>
+<p>Ø  Directory structures</p>
+</blockquote>
+<blockquote>
+<p>Ø  Console applet bases in 8.1 ; while it is portlet based in later versions</p>
+</blockquote>
+<blockquote>
+<p>Ø  8.1 has one big config.xml ; later versions have basic info in config.xml and subsystem level info in different directories(jms, jdbc, etc)</p>
+</blockquote>
+<ul>
+<li><strong>What are multi pools / multi data sources?</strong></li>
+</ul>
+<blockquote>
+<p>Ø  MultiPools are ‘pools of connection pools’ that you can set up according to either a high availability or load balancing algorithm</p>
+</blockquote>
+<blockquote>
+<p>Ø  You can use a MultiPool in the same manner that you use a connection pool.</p>
+</blockquote>
+<blockquote>
+<p>Ø  When an application requests a connection, the MultiPool determines which connection pool will provide a connection, based on the selected algorithm</p>
+</blockquote>
+<ul>
+<li><strong>What is IIS server?</strong></li>
+</ul>
+<blockquote>
+<p>Ø  IIS is a webserver developed by Microsoft which is shipped with Windows NT/2000/2003 +</p>
+</blockquote>
+<blockquote>
+<p>Ø  Available versions : 5, 6, 7</p>
+</blockquote>
+<blockquote>
+<p>Ø  Usually used for hosting static HTML pages and used as an aplkication server for <a href="http://ASP.NET">ASP.NET</a> application developed using DOT NET framework 1+.</p>
+</blockquote>
+<blockquote>
+<p>Ø  Can be used as a proxy server for routing requests to weblogic server</p>
+</blockquote>
+<ul>
+<li><strong>Where are user credentials stored?</strong></li>
+</ul>
+<blockquote>
+<p>Ø  User credentials are stored in the ‘boot.properties’ file , which has its encryption key in the ‘SerializedSystemIni.dat’</p>
+</blockquote>
+<blockquote>
+<p>Ø  If you use a script to start a server instance, it is recommended that you do not use this technique because it requires you to store an unencrypted password in the startup script.</p>
+</blockquote>
+<ul>
+<li><strong>Suggest few JVM tuning parameters.</strong></li>
+</ul>
+<blockquote>
+<p>Ø  Initial heap size and maximum heap size to be same (-xms and –xmx):T his ensures less is spend by the CPU to allocate memory in rutime</p>
+</blockquote>
+<blockquote>
+<p>Ø  Young generation (-XX:MaxNewSize): The bigger the young generation, the less often minor collections occur. However, for a bounded heap size a larger young generation implies a smaller tenured generation, which will increase the frequency of major collections. The optimal choice depends on the lifetime distribution of the objects allocated by the application.</p>
+</blockquote>
+<p><strong>Do forget to leave your comments</strong></p>
+<p><strong>Part 2 coming soon… keep posted for further updates…</strong></p>
+<p>—<br>
+Regards,<br>
+Unni</p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

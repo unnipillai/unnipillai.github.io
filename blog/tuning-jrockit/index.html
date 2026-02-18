@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Tuning JRockit — unni@dropzone</title><meta name="description" content="Tuning the Heap Size:"><link rel="canonical" href="https://unnipillai.com/blog/tuning-jrockit/"><meta property="og:title" content="Tuning JRockit — unni@dropzone"><meta property="og:description" content="Tuning the Heap Size:"><meta property="og:url" content="https://unnipillai.com/blog/tuning-jrockit/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Tuning JRockit</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2011-05-24T00:00:00.000Z">May 24, 2011</time> </div> </div> </header> <div class="prose">  <p><img src="https://substack-post-media.s3.amazonaws.com/public/images/b2b7f844-d37d-4125-b674-e3ba7b983cc9_1152x698.png" alt="File:JvmSpec7.png - Wikimedia Commons"></p>
+<p><strong>Tuning the Heap Size:</strong></p>
+<ul>
+<li>
+<p>A large heap decreases the garbage collection frequency but may take slightly longer to garbage collect.</p>
+</li>
+<li>
+<p>Typically a heap should be at least twice the size of the live objects in the heap.</p>
+</li>
+<li>
+<p>Should set the heap as large as the PHYSICAL memory in your system will allow, as long as it doesn’t cause paging.</p>
+</li>
+<li>
+<p>-Xms:, which sets the initial and minimum heap size.</p>
+</li>
+<li>
+<p>-Xmx:, which sets the maximum heap size.</p>
+</li>
+<li>
+<p>Set the initial/minimum heap size (-Xms) to the same value as the maximum heap size (-Xmx).</p>
+</li>
+</ul>
+<p><strong>Tuning the Garbage Collection</strong></p>
+<ul>
+<li>
+<p>JRockit offers three garbage collection modes and a number of static garbage collection strategies. You can tune the garbage collection to suit your application’s needs.</p>
+</li>
+<li>
+<p>-XgcPrio:throughput: Defines that the garbage collection should be optimized for application throughput. This is the default garbage collection mode.</p>
+</li>
+<li>
+<p>-XgcPrio:pausetime : Defines that the garbage collection should be optimized for short garbage collection pauses.</p>
+</li>
+<li>
+<p>-XgcPrio:deterministic {Only with JRockit Real-Time}: Defines that GC should be optimized for very short and deterministic garbage collection pauses.</p>
+</li>
+</ul>
+<p><strong>Tuning the Pause Target</strong></p>
+<ul>
+<li>
+<p>This parameter is used to tune JVMs which host ‘time critical applications’ (Ex: A banking application  that normally take 100 ms to complete and times out after 400 ms, cannot afford a GC pause time of 500ms)</p>
+</li>
+<li>
+<p>The pause time mode uses a pause target for optimizing the pause times; pause target should be as high as your application can tolerate</p>
+</li>
+<li>
+<p>This parameter is coupled and used with ‘-XgcPrio:pausetime’ (ex: java -XgcPrio:pausetime -XpauseTarget:300ms weblogic.Server); default ‘pauseTarget’ is not specified is 500ms</p>
+</li>
+</ul>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span># Below given parameters should not be changes until you</span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>feel a real need to tune your Weblogic server; incorrect</span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span> tuning may lead to uneven performance degradation.</span></span></code></pre>
+<p><strong>Tuning Compaction</strong></p>
+<ul>
+<li>
+<p>Whenever GC(old collection) runs it defragments the heap, making object allocation easier for the JVM this process is called heap compaction; compaction <em>may</em> lead to long pauses in GC because it takes up the CPU time to arrange and defragment the heap</p>
+</li>
+<li>
+<p>-XXcompactRatio:centage> : this specifies the percentage of heap which will be defragmented when GC runs;  a good value for the compact ratio is usually between 1 and 20; a too low value can also invite trouble as it slows down defragmentation and increases the amount of <em>dark matter</em>(“Dark matter” is wasted heap memory and fragments the heap)</p>
+</li>
+<li>
+<p>-XXcompactSetLimit:<references> : When compaction has moved objects, the references to these objects must be updated. JVM has to do this before threads have access to those memory references; this parameter defines how many references GC can compact within the compaction area (Ex: java -XXcompactSetLimit:20000 MyApplication)</references></p>
+</li>
+</ul>
+<p><strong>Tuning the TLA (Thread Local Area)</strong></p>
+<ul>
+<li>
+<p>It is the chunk of memory reserved in the heap for a thread for its exclusive use.</p>
+</li>
+<li>
+<p>When this TLA gets filled up we see the ‘java.lang.OutOfMemoryError: nativeGetNewTLA’, to fix this we can tune the ‘-XXtlaSize:min=e>,preferred=’ parameter increase the TLA (Ex: -XXtlasize:min=8k,preferred=512k)</p>
+</li>
+<li>
+<p>Increasing the TLA size is beneficial for multi threaded applications; however increasing it too much may result in more fragmentation and more frequent garbage collections.</p>
+</li>
+</ul>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>

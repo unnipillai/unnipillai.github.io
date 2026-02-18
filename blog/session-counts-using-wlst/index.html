@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Session Counts using WLST — unni@dropzone</title><meta name="description" content="Someone asked me this question few days back:Is there a way to find out the number of http sessions using WLST? I can query this information by clicking on Deployments and then clicking on Monitoring "><link rel="canonical" href="https://unnipillai.com/blog/session-counts-using-wlst/"><meta property="og:title" content="Session Counts using WLST — unni@dropzone"><meta property="og:description" content="Someone asked me this question few days back:Is there a way to find out the number of http sessions using WLST? I can query this information by clicking on Deployments and then clicking on Monitoring "><meta property="og:url" content="https://unnipillai.com/blog/session-counts-using-wlst/"><meta property="og:type" content="website"><link rel="stylesheet" href="/_astro/_slug_.kM52aHBE.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+Blog
+</a> <a href="/about">
+About
+</a> </nav> </div> </div> </header> <main>  <div class="container--prose"> <a href="/blog" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Session Counts using WLST</h1>  <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2009-02-21T00:00:00.000Z">February 21, 2009</time> </div> </div> </header> <div class="prose">  <p>Someone asked me this question few days back:<br>
+Is there a way to find out the number of http sessions using WLST? I can query this information by clicking on Deployments and then clicking on Monitoring tab in Admin console.</p>
+<p>Here’s the answer:</p>
+<p>There is a MBEAN in the ‘<strong>RunTimeMbeans</strong>’ named ‘<strong>WebAppComponentRuntimeMBean</strong>’, which has these three attributes for retrieving session count related info:</p>
+<p><strong>OpenSessionsCurrentCount:</strong> Provides a count of the current total number of open sessions in this module.<br>
+<strong>SessionsOpenedTotalCount:</strong> Provides a count of the total number of sessions opened.<br>
+<strong>OpenSessionsHighCount:</strong> Provides the high water mark of the total number of open sessions in this server.This count starts at zero each time the server is activated.<br>
+-</p>
+<h1 id="written-by-unni-on-sat-21-feb-1827-ist-download"><strong>Written by Unni on Sat 21 Feb 18:27 (IST) <a href="http://pastebin.com/pastebin.php?dl=d76cad19c" title="download file">download</a></strong></h1>
+<ol>
+<li>
+<p><em># File Name : ‘SessionCount.py’</em></p>
+</li>
+<li>
+<p><em># Set the enviroment using ‘setDomainEnv.cmd/sh’</em></p>
+</li>
+<li>
+<p><em># Run the script using this command;</em></p>
+</li>
+<li>
+<p><em># java weblogic.WLST SessionCount.py</em></p>
+</li>
+<li>
+<p><em># Here - ‘inmemrep’ is the name of the app ; ‘AdminServer’ is the name of the server on which the app is deployed</em></p>
+</li>
+<li>
+<p><strong>print</strong> ‘Start of script…’</p>
+</li>
+<li>
+<p>connect(‘weblogic’,‘weblogic’,‘t3://localhost:7001’)</p>
+</li>
+<li>
+<p>serverRuntime()</p>
+</li>
+<li>
+<p>cd(‘/ApplicationRuntimes/inmemrep/ComponentRuntimes/AdminServer_/inmemrep’)</p>
+</li>
+<li>
+<p>n = get(‘Name’)</p>
+</li>
+<li>
+<p>x = get(‘OpenSessionsHighCount’)</p>
+</li>
+<li>
+<p>y = get(‘OpenSessionsCurrentCount’)</p>
+</li>
+<li>
+<p>z = get(‘SessionsOpenedTotalCount’)</p>
+</li>
+<li>
+<p><strong>print</strong> ‘Session Counts for ‘,n</p>
+</li>
+<li>
+<p><strong>print</strong> ‘<strong>\n</strong>------------’</p>
+</li>
+<li>
+<p><strong>print</strong> ‘<strong>\n</strong>OpenSessionsHighCount: ‘,x</p>
+</li>
+<li>
+<p><strong>print</strong> ‘<strong>\n</strong>OpenSessionsCurrentCount: ‘,y</p>
+</li>
+<li>
+<p><strong>print</strong> ‘<strong>\n</strong>SessionsOpenedTotalCount: ‘,z</p>
+</li>
+<li>
+<p><strong>print</strong> ‘End of script…’</p>
+</li>
+<li>
+<p><em># Code written by:</em></p>
+</li>
+<li>
+<p><em># Unnikrishnan Pillai,</em></p>
+</li>
+<li>
+<p><em># Engineer,</em></p>
+</li>
+<li>
+<p><em># Oracle Global Support</em></p>
+</li>
+</ol>
+<p>Signing off…</p>
+<p><strong>Unni</strong></p>
+<p><strong><a href="mailto:unni@unnikrishnanpillai.tk">unni@unnikrishnanpillai.tk</a></strong></p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>
