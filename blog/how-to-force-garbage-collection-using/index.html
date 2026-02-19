@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>How To: Force Garbage Collection using WLST — unni@dropzone</title><meta name="description" content="WLST script that triggers a forced JVM garbage collection on a WebLogic server via cmo.runGC() — useful when memory isn't releasing under normal conditions."><link rel="canonical" href="https://unnipillai.com/blog/how-to-force-garbage-collection-using/"><!-- Open Graph --><meta property="og:title" content="How To: Force Garbage Collection using WLST — unni@dropzone"><meta property="og:description" content="WLST script that triggers a forced JVM garbage collection on a WebLogic server via cmo.runGC() — useful when memory isn't releasing under normal conditions."><meta property="og:url" content="https://unnipillai.com/blog/how-to-force-garbage-collection-using/"><meta property="og:type" content="article"><meta property="article:published_time" content="2009-02-07T00:00:00.000Z"><meta property="article:author" content="Unni Pillai"><meta property="og:image" content="https://unnipillai.com/avatar.webp"><!-- Twitter / X --><meta name="twitter:card" content="summary"><meta name="twitter:title" content="How To: Force Garbage Collection using WLST — unni@dropzone"><meta name="twitter:description" content="WLST script that triggers a forced JVM garbage collection on a WebLogic server via cmo.runGC() — useful when memory isn't releasing under normal conditions."><meta name="twitter:image" content="https://unnipillai.com/avatar.webp"><!-- TODO: SEO: JSON-LD structured data (Person on /about, Article on posts) --><link rel="stylesheet" href="/_astro/_slug_.DbDLuWMS.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>How To: Force Garbage Collection using WLST — unni@dropzone</title><meta name="description" content="WLST script that triggers a forced JVM garbage collection on a WebLogic server via cmo.runGC() — useful when memory isn't releasing under normal conditions."><meta name="theme-color" content="#292524"><link rel="canonical" href="https://unnipillai.com/blog/how-to-force-garbage-collection-using/"><!-- Open Graph --><meta property="og:title" content="How To: Force Garbage Collection using WLST — unni@dropzone"><meta property="og:description" content="WLST script that triggers a forced JVM garbage collection on a WebLogic server via cmo.runGC() — useful when memory isn't releasing under normal conditions."><meta property="og:url" content="https://unnipillai.com/blog/how-to-force-garbage-collection-using/"><meta property="og:type" content="article"><meta property="article:published_time" content="2009-02-07T00:00:00.000Z"><meta property="article:author" content="Unni Pillai"><meta property="og:image" content="https://unnipillai.com/avatar.webp"><!-- Twitter / X --><meta name="twitter:card" content="summary"><meta name="twitter:title" content="How To: Force Garbage Collection using WLST — unni@dropzone"><meta name="twitter:description" content="WLST script that triggers a forced JVM garbage collection on a WebLogic server via cmo.runGC() — useful when memory isn't releasing under normal conditions."><meta name="twitter:image" content="https://unnipillai.com/avatar.webp"><!-- TODO: SEO: JSON-LD structured data (Person on /about, Article on posts) --><link rel="stylesheet" href="/_astro/_slug_.CbJOY83Y.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog" aria-current="page">
 Blog
 </a> <a href="/about">
 About
@@ -74,4 +74,31 @@ About
 <p>6. The above script runs ‘GC’ on ‘AdminServer’ to run the script of managered server replace the ‘AdminServer’ from the script with the name of the ‘ManagedServer’.</p>
 <p>Hope this helps :)</p>
 <p><strong>Unni</strong></p>
-<p><strong><a href="mailto:unni@unnikrishnanpillai.tk">unni@unnikrishnanpillai.tk</a></strong></p>  </div> </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> </body></html>
+<p><strong><a href="mailto:unni@unnikrishnanpillai.tk">unni@unnikrishnanpillai.tk</a></strong></p>  </div>  </article> </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> <!-- Mermaid diagram rendering (only loads on pages that have mermaid blocks) --> <script type="module">
+      const mermaidBlocks = document.querySelectorAll('pre[data-language="mermaid"]');
+      if (mermaidBlocks.length > 0) {
+        const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'dark',
+          themeVariables: {
+            darkMode: true,
+            background: '#292524',
+            primaryColor: '#16a34a',
+            primaryTextColor: '#e7e5e4',
+            primaryBorderColor: '#4a4444',
+            lineColor: '#a8a29e',
+            secondaryColor: '#3f3f46',
+            tertiaryColor: '#44403c',
+            fontFamily: 'Roboto Mono, monospace',
+          },
+        });
+        mermaidBlocks.forEach((pre) => {
+          const div = document.createElement('div');
+          div.classList.add('mermaid');
+          div.textContent = pre.textContent;
+          pre.replaceWith(div);
+        });
+        await mermaid.run();
+      }
+    </script> </body> </html>
