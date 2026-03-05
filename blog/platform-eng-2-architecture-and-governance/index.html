@@ -1,0 +1,380 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.17.2"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"><title>Platform Engineering as a Product (2/3): Architecture, Operating Model, and Governance — unni@dropzone</title><meta name="description" content="A deep dive into the 5-layer platform architecture, the operating model that makes 'you build it, you run it' work, and governance-as-code that embeds compliance without blocking developers."><meta name="theme-color" content="#292524"><link rel="canonical" href="https://unnipillai.com/blog/platform-eng-2-architecture-and-governance/"><!-- Open Graph --><meta property="og:title" content="Platform Engineering as a Product (2/3): Architecture, Operating Model, and Governance — unni@dropzone"><meta property="og:description" content="A deep dive into the 5-layer platform architecture, the operating model that makes 'you build it, you run it' work, and governance-as-code that embeds compliance without blocking developers."><meta property="og:url" content="https://unnipillai.com/blog/platform-eng-2-architecture-and-governance/"><meta property="og:type" content="article"><meta property="article:published_time" content="2026-03-05T00:00:00.000Z"><meta property="article:author" content="Unni Pillai"><meta property="og:image" content="https://unnipillai.com/og/platform-eng-2-architecture-and-governance.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><!-- Twitter / X --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Platform Engineering as a Product (2/3): Architecture, Operating Model, and Governance — unni@dropzone"><meta name="twitter:description" content="A deep dive into the 5-layer platform architecture, the operating model that makes 'you build it, you run it' work, and governance-as-code that embeds compliance without blocking developers."><meta name="twitter:image" content="https://unnipillai.com/og/platform-eng-2-architecture-and-governance.png"><!-- TODO: SEO: JSON-LD structured data (Person on /about, Article on posts) --><link rel="stylesheet" href="/_astro/_slug_.CbJOY83Y.css"></head> <body> <header> <div class="container"> <div class="header-inner"> <a href="/" class="site-name">unni@dropzone:~$</a> <nav> <a href="/blog/" aria-current="page">
+Blog
+</a> <a href="/about/">
+About
+</a> </nav> </div> </div> </header> <main>  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Platform Engineering as a Product (2/3): Architecture, Operating Model, and Governance","description":"A deep dive into the 5-layer platform architecture, the operating model that makes 'you build it, you run it' work, and governance-as-code that embeds compliance without blocking developers.","datePublished":"2026-03-05T00:00:00.000Z","author":{"@type":"Person","name":"Unni Pillai","url":"https://unnipillai.com/about"},"publisher":{"@type":"Person","name":"Unni Pillai","url":"https://unnipillai.com"},"url":"https://unnipillai.com/blog/platform-eng-2-architecture-and-governance/","image":"https://unnipillai.com/og/platform-eng-2-architecture-and-governance.png","isPartOf":{"@type":"CreativeWorkSeries","name":"Platform Engineering as a Product","position":2}}</script> <div class="container--prose"> <a href="/blog/" class="back-link">← All posts</a> <article> <header class="post-header"> <h1>Platform Engineering as a Product (2/3): Architecture, Operating Model, and Governance</h1> <p class="post-subtitle">Part 2 of 3 — Platform Engineering as a Product</p> <div class="author-section"> <img src="/avatar.webp" alt="Unni Pillai" class="author-avatar" onerror="this.src='/avatar.svg';"> <div class="author-avatar-fallback" style="display:none">UP</div> <div class="author-info"> <span class="author-name">Unni Pillai</span> <time class="author-date" datetime="2026-03-05T00:00:00.000Z">March 5, 2026</time> </div> </div> </header> <div class="prose">  <blockquote>
+<ul>
+<li><strong>Part 1:</strong> Why Platform Engineering Matters (and Why Most Get It Wrong)</li>
+<li><strong>Part 2:</strong> Inside the Platform: Architecture, Operating Model, and Governance <em>(you are here)</em></li>
+<li><strong>Part 3:</strong> Building It — The Maturity Roadmap and Tech Stack</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="from-vision-to-internals">From Vision to Internals</h2>
+<p>Most platform engineering efforts die in the architecture phase. Not because the technology is wrong — because no one defines who owns what, who’s on-call, or how governance actually works without becoming a bottleneck.</p>
+<p>In Part 1, we covered the <em>why</em>. Now let’s open the hood. This article covers three things:</p>
+<ol>
+<li><strong>The 5-layer architecture</strong> — what each layer does and how they compose</li>
+<li><strong>The operating model</strong> — who owns what, who’s on-call, and how the platform team functions as a product team</li>
+<li><strong>Governance-as-code</strong> — how to embed compliance without creating bottlenecks</li>
+</ol>
+<hr>
+<h2 id="1-the-5-layer-platform-architecture">1. The 5-Layer Platform Architecture</h2>
+<p>The platform is modular, extensible, and interface-consistent. Every capability flows through the same API — whether your developers use the CLI, UI, or API directly.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="mermaid"><code><span class="line"><span style="color:#E1E4E8">flowchart TB</span></span>
+<span class="line"><span style="color:#E1E4E8">    subgraph UI["1. Developer Interface Layer"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        A1["CLI"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        A2["UI Portal"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        A3["API Gateway"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    end</span></span>
+<span class="line"><span style="color:#E1E4E8">    subgraph Core["2. Platform Core Services"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        B1["Service Blueprint Engine"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        B2["Infra Blueprint Engine"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        B3["Pipeline Orchestrator"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    end</span></span>
+<span class="line"><span style="color:#E1E4E8">    subgraph Policy["3. Policy &#x26; Compliance Layer"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        C1["OPA Policy Engine"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        C2["Input Validators"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        C3["Security Scanners"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    end</span></span>
+<span class="line"><span style="color:#E1E4E8">    subgraph Runtime["4. Provisioning &#x26; Runtime Layer"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        D1["Infra Provisioning"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        D2["Service Deployment"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        D3["Environment Orchestrator"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    end</span></span>
+<span class="line"><span style="color:#E1E4E8">    subgraph Obs["5. Observability &#x26; Audit Layer"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        E1["Telemetry Hooks"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        E2["Audit Trail"]</span></span>
+<span class="line"><span style="color:#E1E4E8">        E3["Cost Monitor"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    end</span></span>
+<span class="line"><span style="color:#E1E4E8">    A1 --> A3</span></span>
+<span class="line"><span style="color:#E1E4E8">    A2 --> A3</span></span>
+<span class="line"><span style="color:#E1E4E8">    A3 --> B1</span></span>
+<span class="line"><span style="color:#E1E4E8">    A3 --> B2</span></span>
+<span class="line"><span style="color:#E1E4E8">    A3 --> B3</span></span>
+<span class="line"><span style="color:#E1E4E8">    B1 --> C1</span></span>
+<span class="line"><span style="color:#E1E4E8">    B2 --> C1</span></span>
+<span class="line"><span style="color:#E1E4E8">    B3 --> C2</span></span>
+<span class="line"><span style="color:#E1E4E8">    B3 --> C3</span></span>
+<span class="line"><span style="color:#E1E4E8">    C1 --> D1</span></span>
+<span class="line"><span style="color:#E1E4E8">    C2 --> D1</span></span>
+<span class="line"><span style="color:#E1E4E8">    C3 --> D2</span></span>
+<span class="line"><span style="color:#E1E4E8">    B1 --> D2</span></span>
+<span class="line"><span style="color:#E1E4E8">    D1 --> E3</span></span>
+<span class="line"><span style="color:#E1E4E8">    D2 --> E1</span></span>
+<span class="line"><span style="color:#E1E4E8">    D2 --> E2</span></span></code></pre>
+<h3 id="layer-1-developer-interface">Layer 1: Developer Interface</h3>
+<p>This is the surface your developers interact with. Three interfaces, one underlying API.</p>
+<ul>
+<li><strong>API Gateway</strong> — the primary surface. All capabilities are exposed via versioned APIs. This is the backbone that ensures consistency across all interfaces.</li>
+<li><strong>CLI Tool</strong> — for power users and CI/CD integrations. Think <code>dip create</code>, <code>dip deploy</code>, <code>dip monitor</code>. Uses the same API as everything else.</li>
+<li><strong>UI Portal</strong> — for visual workflows, service discovery, scaffolding, and dashboards. Ideal for onboarding and service browsing.</li>
+</ul>
+<p>The guiding principle: <strong>every capability is API-accessible, CLI-controllable, and UI-visible.</strong></p>
+<h3 id="layer-2-platform-core-services">Layer 2: Platform Core Services</h3>
+<p>This is where the intelligence lives.</p>
+<ul>
+<li><strong>Service Blueprint Engine</strong> — provides golden templates for common service types. A developer says “I need a REST API service” and gets a fully scaffolded project with CI/CD, logging, tracing, and compliance hooks pre-wired.</li>
+<li><strong>Infrastructure Blueprint Engine</strong> — manages reusable, versioned modules for infrastructure provisioning. Databases, queues, caches, storage — all defined as curated blueprints that abstract away cloud-specific details.</li>
+<li><strong>Pipeline Orchestrator</strong> — standardizes CI/CD pipelines across teams. Shared templates with hooks for security scanning, policy checks, and automated testing.</li>
+</ul>
+<h3 id="layer-3-policy--compliance">Layer 3: Policy &#x26; Compliance</h3>
+<p>Governance is built into the platform, not bolted on top.</p>
+<ul>
+<li><strong>Policy-as-Code Engine</strong> — uses OPA (Open Policy Agent) or similar tools for runtime policy evaluation. Rules like “all storage must be encrypted at rest” or “no public-facing resources without TLS” are evaluated automatically during provisioning and deployment.</li>
+<li><strong>Input Validators</strong> — catch bad requests early. Before a blueprint even executes, parameters are validated against schemas, allowed values, and organizational constraints.</li>
+<li><strong>Security Scanners</strong> — embedded into every pipeline. SAST, container scanning, IaC scanning — all running automatically as part of the golden path.</li>
+</ul>
+<h3 id="layer-4-provisioning--runtime">Layer 4: Provisioning &#x26; Runtime</h3>
+<p>This layer executes the actual infrastructure and service deployments.</p>
+<ul>
+<li><strong>Infra Provisioning Controller</strong> — manages infrastructure lifecycle via Terraform, Crossplane, or Pulumi. Handles creation, updates, drift detection, and teardown.</li>
+<li><strong>Service Deployment Controller</strong> — integrates with GitOps tools (ArgoCD, Flux) or CI/CD runners for application deployment across environments.</li>
+<li><strong>Environment Orchestrator</strong> — handles multi-environment support, cloud-region mapping, and on-prem orchestration. Developers spin up environments through the platform; this layer handles the complexity underneath.</li>
+</ul>
+<h3 id="layer-5-observability--audit">Layer 5: Observability &#x26; Audit</h3>
+<p>Every service deployed through the platform comes with observability pre-configured.</p>
+<ul>
+<li><strong>Telemetry Hooks</strong> — logging, metrics, and tracing are baked into blueprints via OpenTelemetry, Prometheus, and Grafana. Developers don’t configure monitoring — it’s already there.</li>
+<li><strong>Audit Trail Collector</strong> — every action through the platform is logged. Who provisioned what, when, from where. Critical for compliance and debugging.</li>
+<li><strong>Cost &#x26; Usage Monitor</strong> — auto-tags resources and links them to cost dashboards. Teams see their spend in real time, not at the end of the quarter.</li>
+</ul>
+<hr>
+<h2 id="2-the-operating-model">2. The Operating Model</h2>
+<p>Architecture is one thing. How people operate within it is another. This is where “you build it, you run it” either works or falls apart.</p>
+<h3 id="role-based-ownership">Role-Based Ownership</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Role</th><th>Responsibilities</th><th>Owns</th></tr></thead><tbody><tr><td><strong>Developer Teams</strong></td><td>Build, deploy, and operate services end-to-end. Consume platform APIs, templates, and pipelines. Define SLOs, monitor performance, manage incidents</td><td>Service code, infra blueprints used by their service, alerts, dashboards</td></tr><tr><td><strong>Platform Engineering Team</strong></td><td>Build and maintain the internal developer platform. Curate and version blueprints. Own API, CLI, and UI layers. Implement policy-as-code. Maintain developer docs and onboarding</td><td>Platform core, shared templates, policy bundles, governance tooling</td></tr><tr><td><strong>Security &#x26; Risk</strong></td><td>Define compliance, security, and data protection policies. Review and audit policy bundles with platform team</td><td>Regulatory inputs, escalation triggers, risk scoring logic</td></tr><tr><td><strong>SRE (Optional / Embedded)</strong></td><td>Guide dev teams in adopting SLOs and resilience patterns. Help establish observability standards. Coach teams through incident reviews</td><td>Reliability practices, SLO/SLI models, observability standards</td></tr></tbody></table>
+<p>The platform team is not an operations team. They don’t operate your services. They don’t provision infrastructure for your teams. They build and maintain the platform that enables everyone else to do those things autonomously. Get this distinction wrong, and you’ve just renamed your ops team.</p>
+<h3 id="on-call--incident-ownership">On-Call &#x26; Incident Ownership</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Layer</th><th>On-Call Owner</th><th>Notes</th></tr></thead><tbody><tr><td><strong>App / Service Runtime</strong></td><td>Developer team</td><td>Alerts configured via platform, tied to service-level SLOs</td></tr><tr><td><strong>Blueprint / Platform Issues</strong></td><td>Platform team</td><td>Bugs in templates, deploy flow, policy logic, API failures</td></tr><tr><td><strong>Infra Failures</strong></td><td>Platform team (initial), cloud escalation if needed</td><td>Provisioning failures, limits, misconfiguration</td></tr><tr><td><strong>Security Incidents</strong></td><td>Security team, with dev team coordination</td><td>Alerts from scanning, policies, or external events</td></tr></tbody></table>
+<p>When something breaks at 2am, the team that built the service owns the first response. The platform team handles platform-level issues — blueprint bugs, provisioning failures, policy engine outages.</p>
+<h3 id="proactive-support-model">Proactive Support Model</h3>
+<p>“You build it, you run it” doesn’t mean “you’re on your own.” The platform team provides:</p>
+<ul>
+<li><strong>Office hours</strong> — regular sessions for onboarding and problem-solving</li>
+<li><strong>Support channels</strong> — #ask-platform, #policy-help, #blueprint-feedback</li>
+<li><strong>Embedded champions</strong> — platform team members temporarily embedded with key product squads during early adoption phases</li>
+</ul>
+<h3 id="platform-as-product-ways-of-working">Platform as Product: Ways of Working</h3>
+<p>The platform team operates as a product team, not a service desk.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Practice</th><th>How It’s Done</th></tr></thead><tbody><tr><td><strong>Customer Discovery</strong></td><td>Biweekly feedback sessions with dev teams, friction log reviews</td></tr><tr><td><strong>Backlog Management</strong></td><td>Kanban or dual-track agile — prioritized by adoption, internal demand, and risk</td></tr><tr><td><strong>Release Management</strong></td><td>Versioned blueprint releases, changelogs, backwards compatibility guarantees</td></tr><tr><td><strong>Adoption Metrics</strong></td><td>Track services onboarded, time-to-deploy, pipeline usage, developer satisfaction</td></tr><tr><td><strong>Documentation</strong></td><td>First-class artifact — built into CLI/UI flows and auto-generated from blueprints</td></tr></tbody></table>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="mermaid"><code><span class="line"><span style="color:#E1E4E8">flowchart TD</span></span>
+<span class="line"><span style="color:#E1E4E8">    A["Developer Teams"] -->|"Uses"| B["Platform APIs &#x26; CLI/UI"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    A -->|"Owns"| C["Services &#x26; Pipelines"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    B -->|"Built by"| D["Platform Team"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    C -->|"Integrated with"| E["Observability Layer"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    D -->|"Collaborates with"| F["Security Team"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    F -->|"Defines"| G["Policy-as-Code Bundles"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    D -->|"Maintains"| G</span></span>
+<span class="line"><span style="color:#E1E4E8">    A -->|"Consumes"| G</span></span>
+<span class="line"><span style="color:#E1E4E8">    A -->|"Alerts to"| H["On-call Rotations"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    D -->|"Supports"| H</span></span></code></pre>
+<hr>
+<h2 id="-3-governance-as-code">🔐 3. Governance-as-Code</h2>
+<p>If you’re in a regulated industry — fintech, banking, insurance — governance isn’t optional. But it also shouldn’t be a bottleneck. I’ve seen organizations where a compliance review adds two weeks to every deployment. That’s not governance. That’s a queue.</p>
+<p>The platform adopts a <strong>governance-as-code</strong> model that enforces security, compliance, and best practices at multiple layers, automatically. Developers move fast within safe guardrails. Security teams get assurance. Auditors get logs. No manual gates.</p>
+<h3 id="three-enforcement-layers">Three Enforcement Layers</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Layer</th><th>Description</th><th>Tools / Methods</th></tr></thead><tbody><tr><td><strong>Input Validation</strong></td><td>Parameters validated before infra or service creation</td><td>JSON schema, regex, CLI validators, UI constraints</td></tr><tr><td><strong>Policy-as-Code</strong></td><td>Dynamic rules evaluated during blueprint execution and deployment</td><td>OPA / Gatekeeper, Conftest</td></tr><tr><td><strong>Pipeline Hooks</strong></td><td>All CI/CD pipelines include required scanning and logging</td><td>Snyk, Trivy, Checkov, custom admission controllers</td></tr></tbody></table>
+<h3 id="policy-bundle-design">Policy Bundle Design</h3>
+<p>Policies are organized as modular bundles and managed like application code — versioned, tested, and deployed with changelogs.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>policy-bundle/</span></span>
+<span class="line"><span>├── terraform/</span></span>
+<span class="line"><span>│   ├── enforce-encryption.rego</span></span>
+<span class="line"><span>│   ├── restrict-instance-types.rego</span></span>
+<span class="line"><span>├── kubernetes/</span></span>
+<span class="line"><span>│   ├── restrict-host-paths.rego</span></span>
+<span class="line"><span>│   └── enforce-resource-limits.rego</span></span>
+<span class="line"><span>├── cicd/</span></span>
+<span class="line"><span>│   ├── block-default-branch-push.yaml</span></span>
+<span class="line"><span>│   └── enforce-security-scan.yaml</span></span>
+<span class="line"><span>├── metadata/</span></span>
+<span class="line"><span>│   ├── version.json</span></span>
+<span class="line"><span>│   └── policy-owners.yaml</span></span></code></pre>
+<h3 id="governance-lifecycle">Governance Lifecycle</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Step</th><th>Description</th></tr></thead><tbody><tr><td><strong>Authoring</strong></td><td>Platform team and security team collaborate to define policy logic</td></tr><tr><td><strong>Testing</strong></td><td>Policies tested against sandbox blueprints and sample inputs</td></tr><tr><td><strong>Releasing</strong></td><td>Versioned and rolled out via changelog and flagging system</td></tr><tr><td><strong>Monitoring</strong></td><td>Violations logged with dashboards showing policy hits/failures</td></tr><tr><td><strong>Reviewing</strong></td><td>Periodically audited and reviewed with stakeholders</td></tr></tbody></table>
+<h3 id="policy-enforcement-flow">Policy Enforcement Flow</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="mermaid"><code><span class="line"><span style="color:#E1E4E8">flowchart TD</span></span>
+<span class="line"><span style="color:#E1E4E8">    A["Dev initiates service / infra request"] --> B["Input Validator"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    B -->|"Valid"| C["Policy Engine (OPA)"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    B -->|"Invalid"| X["Error: Missing or Invalid Input"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    C -->|"Compliant"| D["Provision Infra / Deploy App"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    C -->|"Violation"| Y["Reject + Policy Violation Log"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    D --> E["Trigger CI/CD Pipeline"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    E --> F["Run Security Scanners"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    F -->|"Passed"| G["Deploy to Environment"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    F -->|"Failed"| Z["Block + Report to Dev + Audit Log"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    D --> H["Auto-tagging + Audit Trail"]</span></span>
+<span class="line"><span style="color:#E1E4E8">    style X fill:#7f1d1d,color:#e7e5e4</span></span>
+<span class="line"><span style="color:#E1E4E8">    style Y fill:#7f1d1d,color:#e7e5e4</span></span>
+<span class="line"><span style="color:#E1E4E8">    style Z fill:#7f1d1d,color:#e7e5e4</span></span>
+<span class="line"><span style="color:#E1E4E8">    style G fill:#14532d,color:#e7e5e4</span></span></code></pre>
+<blockquote>
+<p>This flow enforces policies without blocking workflows. Developers get fast feedback. Security teams get visibility. Auditors get logs. No one waits in a queue.</p>
+</blockquote>
+<h3 id="common-policies">Common Policies</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Category</th><th>Policy Example</th></tr></thead><tbody><tr><td><strong>Security</strong></td><td>All storage must be encrypted at rest; no public-facing resources without TLS</td></tr><tr><td><strong>Cost Management</strong></td><td>All resources must be tagged with <code>cost-center</code> and <code>env</code></td></tr><tr><td><strong>Resilience</strong></td><td>All services must define liveness and readiness probes</td></tr><tr><td><strong>Deployment</strong></td><td>No pushes directly to default branch; PR checks must pass before deploy</td></tr><tr><td><strong>Infra Provisioning</strong></td><td>Only approved regions, instance types, and services may be used</td></tr></tbody></table>
+<hr>
+<h2 id="whats-next">What’s Next</h2>
+<p>We’ve covered the architecture (how it’s built), the operating model (how it’s run), and governance (how compliance is embedded). The platform is designed. Now it needs to be built.</p>
+<p>In <strong>Part 3</strong>, we cover the <strong>capability evolution roadmap</strong> — how to go from a bootstrap MVP to an autonomous, AI-assisted platform — and the <strong>tech stack</strong> recommendations for each layer.</p>
+<hr>
+<p>/ Unni</p>  </div> <nav class="series-nav" aria-label="Series navigation"> <div class="series-nav-inner"> <a href="/blog/platform-eng-1-why-it-matters/" class="series-nav-link series-nav-prev"> <span class="series-nav-label">← Previous</span> <span class="series-nav-title">Platform Engineering as a Product (1/3): Why It Matters (and Why Most Get It Wrong)</span> </a> <div></div> </div> </nav> </article>  </div>  </main> <footer> <div class="container"> <div class="footer-inner"> <span>© 2026 unni@dropzone</span> <span>Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a></span> </div> </div> </footer> <!-- Mermaid diagram rendering (only loads on pages that have mermaid blocks) --> <script type="module">
+      const mermaidBlocks = document.querySelectorAll('pre[data-language="mermaid"]');
+      if (mermaidBlocks.length > 0) {
+        const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'dark',
+          themeVariables: {
+            darkMode: true,
+            background: '#292524',
+            primaryColor: '#16a34a',
+            primaryTextColor: '#e7e5e4',
+            primaryBorderColor: '#4a4444',
+            lineColor: '#a8a29e',
+            secondaryColor: '#3f3f46',
+            tertiaryColor: '#44403c',
+            fontFamily: 'Roboto Mono, monospace',
+          },
+        });
+        mermaidBlocks.forEach((pre) => {
+          const div = document.createElement('div');
+          div.classList.add('mermaid');
+          div.textContent = pre.textContent;
+          pre.replaceWith(div);
+        });
+        await mermaid.run();
+      }
+    </script> </body> </html>
